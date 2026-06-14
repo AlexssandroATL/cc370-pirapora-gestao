@@ -2,221 +2,234 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>CC 370 — Gestão Pirapora</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#0f1117;--bg2:#1a1d27;--bg3:#22253a;--bg4:#2d3150;
-  --border:#2d3150;--border2:#3d4170;
-  --green:#1D9E75;--green2:#9FE1CB;
-  --amber:#EF9F27;--amber2:#FAC775;
-  --red:#E24B4A;--red2:#F09595;
-  --blue:#378ADD;--blue2:#85B7EB;
+  --bg:#0f1117;--bg2:#1a1d27;--bg3:#22253a;--bg4:#2d3150;--border:#2d3150;--border2:#3d4170;
+  --green:#1D9E75;--green2:#9FE1CB;--amber:#EF9F27;--amber2:#FAC775;
+  --red:#E24B4A;--red2:#F09595;--blue:#378ADD;--blue2:#85B7EB;
   --text:#F0F2F8;--text2:#A0A8C0;--text3:#606880;
-  --radius:10px;--radius-sm:6px;
+  --r:10px;--rs:6px;
 }
 body{background:var(--bg);color:var(--text);font-family:system-ui,sans-serif;font-size:13px;line-height:1.5;min-height:100vh}
-.nav{display:flex;align-items:center;gap:0;border-bottom:1px solid var(--border);background:var(--bg2);position:sticky;top:0;z-index:100;flex-wrap:wrap}
-.nav-brand{padding:10px 16px;font-size:12px;font-weight:600;color:var(--text2);border-right:1px solid var(--border);white-space:nowrap}
-.nav-brand span{color:var(--green);font-size:10px;display:block;font-weight:400}
-.nav-tabs{display:flex;gap:0;flex:1;overflow-x:auto}
-.tab{padding:10px 14px;font-size:12px;font-weight:500;color:var(--text3);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all .15s}
+.nav{display:flex;align-items:center;border-bottom:1px solid var(--border);background:var(--bg2);position:sticky;top:0;z-index:100;flex-wrap:wrap}
+.brand{padding:10px 16px;font-size:12px;font-weight:700;color:var(--text2);border-right:1px solid var(--border);white-space:nowrap;line-height:1.3}
+.brand small{color:var(--green);font-size:10px;display:block;font-weight:400}
+.tabs{display:flex;flex:1;overflow-x:auto}
+.tab{padding:10px 13px;font-size:12px;font-weight:500;color:var(--text3);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all .15s}
 .tab:hover{color:var(--text2)}
-.tab.active{color:var(--text);border-bottom-color:var(--green)}
-.nav-date{padding:10px 14px;font-size:11px;color:var(--text3);border-left:1px solid var(--border);white-space:nowrap}
-.page{display:none;padding:16px;max-width:900px;margin:0 auto}
-.page.active{display:block}
-.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-bottom:12px}
-.card-title{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
-@media(max-width:600px){.grid4{grid-template-columns:repeat(2,1fr)}.grid2{grid-template-columns:1fr}}
-.metric{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px}
-.metric-label{font-size:10px;color:var(--text3);margin-bottom:3px}
-.metric-val{font-size:18px;font-weight:700;color:var(--text)}
-.metric-val.green{color:var(--green)}
-.metric-val.amber{color:var(--amber)}
-.metric-val.red{color:var(--red)}
-.metric-sub{font-size:10px;color:var(--text3);margin-top:2px}
-.prog-wrap{margin:8px 0}
-.prog-label{display:flex;justify-content:space-between;font-size:11px;color:var(--text3);margin-bottom:4px}
-.prog-track{height:6px;background:var(--bg4);border-radius:3px;overflow:hidden}
-.prog-fill{height:6px;border-radius:3px;transition:width .5s;background:var(--green)}
-.prog-fill.amber{background:var(--amber)}
-.badge{display:inline-flex;align-items:center;font-size:10px;font-weight:600;padding:2px 7px;border-radius:20px}
-.badge-green{background:rgba(29,158,117,.15);color:var(--green2)}
-.badge-amber{background:rgba(239,159,39,.15);color:var(--amber2)}
-.badge-red{background:rgba(226,75,74,.15);color:var(--red2)}
-.badge-blue{background:rgba(55,138,221,.15);color:var(--blue2)}
-.badge-gray{background:var(--bg4);color:var(--text3)}
-.check-group{margin-bottom:14px}
-.check-group-title{font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;padding:6px 0;border-bottom:1px solid var(--border);margin-bottom:6px;display:flex;justify-content:space-between}
-.check-item{display:flex;align-items:flex-start;gap:10px;padding:8px 10px;border-radius:var(--radius-sm);cursor:pointer;transition:background .1s;border:1px solid transparent;margin-bottom:3px}
-.check-item:hover{background:var(--bg3)}
-.check-item.done{opacity:.5}
-.check-item.devio{background:rgba(226,75,74,.06);border-color:rgba(226,75,74,.2)}
-.cb{width:17px;height:17px;border:1.5px solid var(--border2);border-radius:4px;flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;transition:all .15s;cursor:pointer}
-.cb.checked{background:var(--green);border-color:var(--green)}
-.cb.checked::after{content:'✓';color:#fff;font-size:10px;font-weight:700}
-.cb.blocked{background:rgba(226,75,74,.15);border-color:var(--red)}
-.cb.blocked::after{content:'✕';color:var(--red2);font-size:10px;font-weight:700}
-.check-info{flex:1}
-.check-name{font-size:12px;color:var(--text);font-weight:500}
-.check-detail{font-size:11px;color:var(--text3);margin-top:1px}
-.check-meta{display:flex;gap:6px;margin-top:4px;flex-wrap:wrap;align-items:center}
-.desvio-btn{font-size:10px;color:var(--red2);cursor:pointer;padding:1px 6px;border:1px solid rgba(226,75,74,.3);border-radius:4px;background:rgba(226,75,74,.08)}
-.desvio-btn:hover{background:rgba(226,75,74,.2)}
-.desvio-form{background:rgba(226,75,74,.06);border:1px solid rgba(226,75,74,.2);border-radius:var(--radius-sm);padding:10px;margin-top:6px;display:none}
-.desvio-form.open{display:block}
-select,textarea,input[type=text],input[type=number]{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius-sm);color:var(--text);padding:6px 8px;font-size:12px;font-family:inherit;margin-top:4px;resize:vertical}
+.tab.on{color:var(--text);border-bottom-color:var(--green)}
+.nav-r{padding:8px 12px;font-size:10px;color:var(--text3);border-left:1px solid var(--border);white-space:nowrap;line-height:1.5}
+.pg{display:none;padding:14px;max-width:960px;margin:0 auto}
+.pg.on{display:block}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;margin-bottom:12px}
+.ct{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+@media(max-width:640px){.g4{grid-template-columns:1fr 1fr}.g2{grid-template-columns:1fr}.g3{grid-template-columns:1fr}}
+.met{background:var(--bg3);border:1px solid var(--border);border-radius:var(--rs);padding:10px 12px}
+.ml{font-size:10px;color:var(--text3);margin-bottom:3px}
+.mv{font-size:18px;font-weight:700}
+.ms{font-size:10px;color:var(--text3);margin-top:2px}
+.mv.g{color:var(--green)}.mv.a{color:var(--amber)}.mv.r{color:var(--red)}
+.pr{margin:6px 0}
+.pl{display:flex;justify-content:space-between;font-size:11px;color:var(--text3);margin-bottom:3px}
+.pt{height:6px;background:var(--bg4);border-radius:3px;overflow:hidden}
+.pf{height:6px;border-radius:3px;transition:width .5s;background:var(--green)}
+.pf.a{background:var(--amber)}.pf.r{background:var(--red)}
+.bdg{display:inline-flex;align-items:center;font-size:10px;font-weight:600;padding:2px 7px;border-radius:20px}
+.bg{background:rgba(29,158,117,.15);color:var(--green2)}
+.ba{background:rgba(239,159,39,.15);color:var(--amber2)}
+.br{background:rgba(226,75,74,.15);color:var(--red2)}
+.bb{background:rgba(55,138,221,.15);color:var(--blue2)}
+.bx{background:var(--bg4);color:var(--text3)}
+/* TRILHA FILTER */
+.trail-bar{display:flex;gap:8px;margin-bottom:14px;align-items:center;flex-wrap:wrap}
+.trail-btn{padding:5px 14px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid var(--border2);background:transparent;color:var(--text3);transition:all .15s}
+.trail-btn.on16{background:rgba(29,158,117,.15);border-color:var(--green);color:var(--green2)}
+.trail-btn.on18{background:rgba(239,159,39,.15);border-color:var(--amber);color:var(--amber2)}
+.trail-btn.onb{background:rgba(55,138,221,.15);border-color:var(--blue);color:var(--blue2)}
+.trail-info{font-size:11px;color:var(--text3);margin-left:auto}
+/* CHECKLIST */
+.cg{margin-bottom:14px}
+.cgt{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;padding:6px 0;border-bottom:1px solid var(--border);margin-bottom:6px;display:flex;justify-content:space-between}
+.ci{display:flex;align-items:flex-start;gap:10px;padding:7px 10px;border-radius:var(--rs);cursor:pointer;transition:background .1s;border:1px solid transparent;margin-bottom:3px}
+.ci:hover{background:var(--bg3)}
+.ci.done{opacity:.45}
+.ci.dev{background:rgba(226,75,74,.06);border-color:rgba(226,75,74,.2)}
+.ci.atrasado{border-left:3px solid var(--amber)}
+.cb{width:17px;height:17px;border:1.5px solid var(--border2);border-radius:4px;flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;transition:all .15s;cursor:pointer;font-size:10px;font-weight:700}
+.cb.c{background:var(--green);border-color:var(--green);color:#fff}
+.cb.d{background:rgba(226,75,74,.2);border-color:var(--red);color:var(--red2)}
+.cn{font-size:12px;font-weight:500;flex:1}
+.cd{font-size:11px;color:var(--text3);margin-top:1px}
+.cm{display:flex;gap:5px;margin-top:4px;flex-wrap:wrap;align-items:center}
+.dbtn{font-size:10px;color:var(--red2);cursor:pointer;padding:1px 6px;border:1px solid rgba(226,75,74,.3);border-radius:4px;background:rgba(226,75,74,.08)}
+.dbtn:hover{background:rgba(226,75,74,.18)}
+.dform{background:rgba(226,75,74,.06);border:1px solid rgba(226,75,74,.2);border-radius:var(--rs);padding:10px;margin-top:6px;display:none}
+.dform.on{display:block}
+select,textarea,input[type=text],input[type=number]{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--rs);color:var(--text);padding:6px 8px;font-size:12px;font-family:inherit;margin-top:4px;resize:vertical}
 select:focus,textarea:focus,input:focus{outline:none;border-color:var(--green)}
-.form-row{margin-bottom:8px}
-.form-label{font-size:10px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.04em}
-.btn{padding:6px 14px;border-radius:var(--radius-sm);font-size:12px;font-weight:600;cursor:pointer;border:none;transition:all .15s}
-.btn-green{background:var(--green);color:#fff}
-.btn-green:hover{background:#17855e}
-.btn-gray{background:var(--bg4);color:var(--text2);border:1px solid var(--border2)}
-.btn-gray:hover{background:var(--bg3)}
-.btn-row{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
-.chat-wrap{height:300px;overflow-y:auto;padding:8px 0;display:flex;flex-direction:column;gap:8px}
-.msg{max-width:88%;padding:9px 12px;border-radius:10px;font-size:12px;line-height:1.6;white-space:pre-wrap}
-.msg.user{background:var(--bg4);color:var(--text);align-self:flex-end;border-bottom-right-radius:3px}
+.fl{font-size:10px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.btn{padding:6px 14px;border-radius:var(--rs);font-size:12px;font-weight:600;cursor:pointer;border:none;transition:all .15s}
+.btn.g{background:var(--green);color:#fff}.btn.g:hover{background:#17855e}
+.btn.x{background:var(--bg4);color:var(--text2);border:1px solid var(--border2)}.btn.x:hover{background:var(--bg3)}
+.brow{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+/* IA CHAT */
+.cw{height:320px;overflow-y:auto;padding:8px 0;display:flex;flex-direction:column;gap:8px}
+.msg{max-width:88%;padding:9px 12px;border-radius:10px;font-size:12px;line-height:1.6;white-space:pre-wrap;word-break:break-word}
+.msg.u{background:var(--bg4);color:var(--text);align-self:flex-end;border-bottom-right-radius:3px}
 .msg.ai{background:var(--bg3);border:1px solid var(--border);color:var(--text);align-self:flex-start;border-bottom-left-radius:3px}
-.msg.loading{color:var(--text3)}
-.chat-input-row{display:flex;gap:8px;margin-top:10px}
-.chat-input-row input{flex:1;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius-sm);color:var(--text);padding:8px 12px;font-size:12px;font-family:inherit}
-.chat-input-row input:focus{outline:none;border-color:var(--green)}
-.chat-input-row button{background:var(--green);color:#fff;border:none;border-radius:var(--radius-sm);padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer}
-.chat-input-row button:hover{background:#17855e}
-.chat-input-row button:disabled{opacity:.5;cursor:not-allowed}
-.quick-qs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
-.qbtn{font-size:11px;padding:4px 10px;border-radius:20px;border:1px solid var(--border2);background:var(--bg3);color:var(--text2);cursor:pointer}
-.qbtn:hover{border-color:var(--green);color:var(--green2)}
-.hist-item{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:8px}
-.hist-date{font-size:10px;color:var(--text3);font-weight:600;margin-bottom:6px}
-.hist-empty{color:var(--text3);font-size:12px;text-align:center;padding:24px}
-.alerta{padding:8px 12px;border-radius:var(--radius-sm);font-size:12px;margin-bottom:8px;border-left:3px solid;display:flex;gap:8px;align-items:flex-start}
-.alerta.red{background:rgba(226,75,74,.08);border-color:var(--red);color:var(--red2)}
-.alerta.amber{background:rgba(239,159,39,.08);border-color:var(--amber);color:var(--amber2)}
-.alerta.green{background:rgba(29,158,117,.08);border-color:var(--green);color:var(--green2)}
-.alerta.blue{background:rgba(55,138,221,.08);border-color:var(--blue);color:var(--blue2)}
-.divider{height:1px;background:var(--border);margin:12px 0}
-.version-tag{font-size:10px;color:var(--text3);text-align:right;padding:4px 16px 8px}
+.msg.ld{color:var(--text3)}
+.ci-row{display:flex;gap:8px;margin-top:10px}
+.ci-row input{flex:1;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--rs);color:var(--text);padding:8px 12px;font-size:12px;font-family:inherit}
+.ci-row input:focus{outline:none;border-color:var(--green)}
+.ci-row button{background:var(--green);color:#fff;border:none;border-radius:var(--rs);padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap}
+.ci-row button:hover{background:#17855e}
+.ci-row button:disabled{opacity:.45;cursor:not-allowed}
+.qq{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.qb{font-size:11px;padding:4px 10px;border-radius:20px;border:1px solid var(--border2);background:var(--bg3);color:var(--text2);cursor:pointer}
+.qb:hover{border-color:var(--green);color:var(--green2)}
+/* HIST */
+.hi{background:var(--bg3);border:1px solid var(--border);border-radius:var(--rs);padding:10px 12px;margin-bottom:8px}
+.hd{font-size:10px;color:var(--text3);font-weight:600;margin-bottom:5px}
+.empty{color:var(--text3);font-size:12px;text-align:center;padding:24px}
+/* ALERTA */
+.al{padding:8px 12px;border-radius:var(--rs);font-size:12px;margin-bottom:8px;border-left:3px solid;display:flex;gap:8px}
+.al.r{background:rgba(226,75,74,.08);border-color:var(--red);color:var(--red2)}
+.al.a{background:rgba(239,159,39,.08);border-color:var(--amber);color:var(--amber2)}
+.al.g{background:rgba(29,158,117,.08);border-color:var(--green);color:var(--green2)}
+.al.b{background:rgba(55,138,221,.08);border-color:var(--blue);color:var(--blue2)}
+/* GANTT MINI */
+.gantt-mini{overflow-x:auto;margin:8px 0}
+.gm-row{display:flex;align-items:center;gap:8px;margin-bottom:3px;min-width:600px}
+.gm-lbl{font-size:10px;color:var(--text3);width:200px;flex-shrink:0;text-align:right;padding-right:8px;line-height:1.3}
+.gm-track{flex:1;height:16px;background:var(--bg4);border-radius:3px;position:relative}
+.gm-bar16{position:absolute;height:16px;border-radius:3px;background:var(--green);opacity:.8}
+.gm-bar18{position:absolute;height:7px;border-radius:3px;background:var(--amber);opacity:.6;top:9px}
+.gm-bar-both16{position:absolute;height:9px;top:0;border-radius:3px;background:var(--green)}
+.gm-bar-both18{position:absolute;height:7px;top:9px;border-radius:3px;background:var(--amber)}
+.gm-head{display:flex;margin-left:208px;gap:0;min-width:392px;margin-bottom:4px}
+.gm-hcol{flex:1;font-size:9px;color:var(--text3);text-align:center;border-left:1px solid var(--border)}
+.ver{font-size:10px;color:var(--text3);text-align:right;padding:6px 14px 4px}
 ::-webkit-scrollbar{width:4px;height:4px}
 ::-webkit-scrollbar-track{background:var(--bg2)}
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+.wap-section{background:rgba(55,138,221,.06);border:1px solid rgba(55,138,221,.2);border-radius:var(--rs);padding:12px;margin-bottom:12px}
+.wap-title{font-size:11px;font-weight:600;color:var(--blue2);margin-bottom:8px}
+.wap-note{font-size:11px;color:var(--text3);line-height:1.6}
 </style>
 </head>
 <body>
 
 <div class="nav">
-  <div class="nav-brand">CC 370 · Pirapora<span>Fórum TJMG — Gestão Alex</span></div>
-  <div class="nav-tabs">
-    <div class="tab active" onclick="showPage('dashboard',this)">Dashboard</div>
-    <div class="tab" onclick="showPage('checklist',this)">Checklist diário</div>
-    <div class="tab" onclick="showPage('desvios',this)">Desvios</div>
-    <div class="tab" onclick="showPage('ia',this)">Consultar IA</div>
-    <div class="tab" onclick="showPage('historico',this)">Histórico</div>
+  <div class="brand">CC 370 · Pirapora<small>Fórum TJMG — Gestão Alex</small></div>
+  <div class="tabs">
+    <div class="tab on" onclick="pg('dash',this)">Dashboard</div>
+    <div class="tab" onclick="pg('check',this)">Checklist</div>
+    <div class="tab" onclick="pg('cron',this)">Cronograma</div>
+    <div class="tab" onclick="pg('dev',this)">Desvios</div>
+    <div class="tab" onclick="pg('ia',this)">Assistente IA</div>
+    <div class="tab" onclick="pg('hist',this)">Histórico</div>
   </div>
-  <div class="nav-date" id="nav-date"></div>
+  <div class="nav-r" id="ndate"></div>
 </div>
 
 <!-- DASHBOARD -->
-<div class="page active" id="page-dashboard">
-  <div class="grid4" style="margin-bottom:12px">
-    <div class="metric">
-      <div class="metric-label">Início da obra</div>
-      <div class="metric-val" style="font-size:14px">15/Jun/2026</div>
-      <div class="metric-sub" id="dias-corridos">— dias corridos</div>
-    </div>
-    <div class="metric">
-      <div class="metric-label">Avanço físico</div>
-      <div class="metric-val green" id="avanco-val">0,0%</div>
-      <div class="metric-sub">Meta: <span id="meta-hoje">2,0%</span></div>
-    </div>
-    <div class="metric">
-      <div class="metric-label">Itens concluídos hoje</div>
-      <div class="metric-val" id="itens-ok">0</div>
-      <div class="metric-sub" id="itens-total">de 35 no checklist</div>
-    </div>
-    <div class="metric">
-      <div class="metric-label">Desvios acumulados</div>
-      <div class="metric-val red" id="desvios-total">0</div>
-      <div class="metric-sub">total registrado</div>
-    </div>
+<div class="pg on" id="pg-dash">
+  <div class="trail-bar">
+    <button class="trail-btn on16" onclick="setTrail(16,this)">🟢 Trilha 16 meses</button>
+    <button class="trail-btn" onclick="setTrail(18,this)">🟡 Trilha 18 meses</button>
+    <button class="trail-btn" onclick="setTrail(0,this)">🔵 Ambas</button>
+    <span class="trail-info" id="trail-info-dash">Meta: 15/Out/2027 (16m)</span>
   </div>
-
+  <div class="g4" style="margin-bottom:12px">
+    <div class="met"><div class="ml">Dias corridos</div><div class="mv" id="d-dias">0</div><div class="ms">desde 15/Jun/2026</div></div>
+    <div class="met"><div class="ml">Avanço físico</div><div class="mv g" id="d-av">0%</div><div class="ms">Meta: <span id="d-meta">2,0%</span></div></div>
+    <div class="met"><div class="ml">Concluídos hoje</div><div class="mv" id="d-ok">0</div><div class="ms" id="d-tot">de 0 ativos</div></div>
+    <div class="met"><div class="ml">Desvios totais</div><div class="mv r" id="d-dev">0</div><div class="ms">acumulados</div></div>
+  </div>
   <div class="card">
-    <div class="card-title">Progresso geral — Implantação M1 a M4</div>
-    <div class="prog-wrap">
-      <div class="prog-label"><span>Checklist geral</span><span id="prog-pct">0%</span></div>
-      <div class="prog-track"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
-    </div>
-    <div class="grid4" style="margin-top:10px">
-      <div style="font-size:11px;color:var(--text3)">M1 Jun–Jul<br><span id="m1-val" style="color:var(--text);font-weight:600">0,0%</span><span style="font-size:10px;color:var(--text3)"> / meta 2,0%</span></div>
-      <div style="font-size:11px;color:var(--text3)">M2 Jul–Ago<br><span style="color:var(--text);font-weight:600">—</span><span style="font-size:10px;color:var(--text3)"> / meta 4,1%</span></div>
-      <div style="font-size:11px;color:var(--text3)">M3 Ago–Set<br><span style="color:var(--text);font-weight:600">—</span><span style="font-size:10px;color:var(--text3)"> / meta 8,0%</span></div>
-      <div style="font-size:11px;color:var(--text3)">M4 Set–Out<br><span style="color:var(--text);font-weight:600">—</span><span style="font-size:10px;color:var(--text3)"> / meta 10,5%</span></div>
+    <div class="ct">Avanço geral da obra</div>
+    <div class="pr"><div class="pl"><span>Progresso físico</span><span id="d-pct">0%</span></div><div class="pt"><div class="pf" id="d-fill" style="width:0%"></div></div></div>
+    <div class="g4" style="margin-top:10px;font-size:11px;color:var(--text3)">
+      <div>Entrega 16m<br><strong id="d-16" style="color:var(--green)">15/Out/2027</strong></div>
+      <div>Entrega 18m<br><strong id="d-18" style="color:var(--amber)">15/Dez/2027</strong></div>
+      <div>CD Ótimo 4m<br><strong style="color:var(--text)">R$ 1,35M</strong></div>
+      <div>Custo registrado<br><strong id="d-custo" style="color:var(--text)">R$ 0</strong></div>
     </div>
   </div>
-
   <div class="card">
-    <div class="card-title">Alertas ativos</div>
-    <div class="alerta red"><span>⚠</span><span><strong>Estacaria:</strong> contratar até 30/Jun/2026. Risco de atraso no mês 3 (pico das fundações).</span></div>
-    <div class="alerta red"><span>⚠</span><span><strong>PCMAT e PCMSO:</strong> documentos obrigatórios não registrados ainda. Acionar TST hoje.</span></div>
-    <div class="alerta red"><span>⚠</span><span><strong>Alvará de tapume e construção:</strong> confirmar emissão pela Prefeitura de Pirapora.</span></div>
-    <div class="alerta amber"><span>⚡</span><span><strong>Licença supressão arbórea:</strong> prazo 15–30 dias. Protocolar imediatamente.</span></div>
-    <div class="alerta amber"><span>⚡</span><span><strong>CNO — Cadastro Nacional de Obras:</strong> registrar na Receita Federal antes da 1ª admissão.</span></div>
-    <div class="alerta blue"><span>ℹ</span><span><strong>SGI:</strong> lançar avanço físico todo sábado. Meta acumulada ao final de M1 (14/Jul): 2,0%.</span></div>
+    <div class="ct">Alertas ativos <span id="d-nalerts" class="bdg br">0</span></div>
+    <div id="d-alerts">
+      <div class="al r"><span>⚠</span><span><strong>Estacaria:</strong> contratar até 30/Jun/2026. Risco crítico de atraso no mês 3.</span></div>
+      <div class="al r"><span>⚠</span><span><strong>PCMAT e PCMSO:</strong> obrigatórios antes do primeiro trabalhador. Pasta 06 vazia.</span></div>
+      <div class="al r"><span>⚠</span><span><strong>Alvarás:</strong> tapume e construção — confirmar emissão pela Prefeitura de Pirapora.</span></div>
+      <div class="al a"><span>⚡</span><span><strong>Supressão arbórea:</strong> protocolar licença hoje — prazo de 15–30 dias para emissão.</span></div>
+      <div class="al a"><span>⚡</span><span><strong>CNO:</strong> registrar na Receita Federal antes da 1ª admissão.</span></div>
+      <div class="al b"><span>ℹ</span><span><strong>SGI:</strong> lançar avanço físico todo sábado. Meta M1 ao 14/Jul: 2,0%.</span></div>
+    </div>
   </div>
-
-  <div class="grid2">
-    <div class="card">
-      <div class="card-title">CD Ótimo — teto 4 meses</div>
-      <div style="font-size:22px;font-weight:700;color:var(--green);margin-bottom:4px">R$ 1.348.240</div>
-      <div style="font-size:11px;color:var(--text3);margin-bottom:10px">PV a receber: R$ 2.514.480</div>
-      <div class="prog-wrap">
-        <div class="prog-label"><span>Custo acumulado</span><span id="custo-pct">0%</span></div>
-        <div class="prog-track"><div class="prog-fill amber" id="custo-fill" style="width:0%"></div></div>
-      </div>
-      <div style="font-size:11px;color:var(--text3);margin-top:6px">Custo registrado: <strong id="custo-val" style="color:var(--text)">R$ 0</strong></div>
-    </div>
-    <div class="card">
-      <div class="card-title">Últimos desvios</div>
-      <div id="ultimos-desvios"><div class="hist-empty" style="padding:12px">Nenhum desvio registrado.</div></div>
-    </div>
+  <div class="card">
+    <div class="ct">Atividades de hoje <span id="d-nhoje" class="bdg bg">0</span></div>
+    <div id="d-hoje"></div>
   </div>
 </div>
 
 <!-- CHECKLIST -->
-<div class="page" id="page-checklist">
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px">
-    <div>
-      <div style="font-size:15px;font-weight:700">Checklist diário</div>
-      <div style="font-size:11px;color:var(--text3)">Marque o que foi concluído. Registre desvios do que não foi feito.</div>
-    </div>
-    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-      <span class="badge badge-green" id="badge-ok">0 ok</span>
-      <span class="badge badge-red" id="badge-dev">0 desvios</span>
-      <button class="btn btn-green" onclick="salvarDia()">💾 Salvar dia</button>
-    </div>
+<div class="pg" id="pg-check">
+  <div class="trail-bar">
+    <button class="trail-btn on16" onclick="setTrailCheck(16,this)">🟢 16 meses</button>
+    <button class="trail-btn" onclick="setTrailCheck(18,this)">🟡 18 meses</button>
+    <button class="trail-btn" onclick="setTrailCheck(0,this)">🔵 Ambas</button>
+    <span class="trail-info" id="trail-info-check"></span>
+    <span class="bdg bg" id="ck-ok" style="margin-left:auto">0 ok</span>
+    <span class="bdg br" id="ck-dev">0 desvios</span>
+    <button class="btn g" onclick="salvarDia()" style="padding:5px 12px">💾 Salvar dia</button>
   </div>
-  <div id="checklist-container"></div>
+  <div id="ck-container"></div>
+</div>
+
+<!-- CRONOGRAMA -->
+<div class="pg" id="pg-cron">
+  <div class="trail-bar">
+    <button class="trail-btn on16" onclick="setTrailCron(16,this)">🟢 16 meses</button>
+    <button class="trail-btn" onclick="setTrailCron(18,this)">🟡 18 meses</button>
+    <button class="trail-btn" onclick="setTrailCron(0,this)">🔵 Ambas</button>
+    <select id="cron-grupo" onchange="renderCron()" style="max-width:160px;margin-left:auto;margin-top:0">
+      <option value="">Todas as etapas</option>
+      <option value="implantacao">Implantação</option>
+      <option value="estruturacao">Estruturação</option>
+      <option value="recheio">Recheio</option>
+      <option value="acabamentos">Acabamentos</option>
+      <option value="cobertura">Cobertura</option>
+      <option value="fachada">Fachada</option>
+      <option value="area_externa">Área Externa</option>
+      <option value="entrega">Entrega</option>
+    </select>
+  </div>
+  <div class="card" style="padding:10px">
+    <div class="ct">Legenda <span style="font-size:10px;font-weight:400">Cada barra = duração da atividade | Início em 15/Jun/2026</span></div>
+    <div style="display:flex;gap:16px;font-size:11px;color:var(--text3);margin-bottom:10px;flex-wrap:wrap">
+      <span><span style="display:inline-block;width:12px;height:8px;background:var(--green);border-radius:2px;margin-right:4px"></span>Trilha 16 meses</span>
+      <span><span style="display:inline-block;width:12px;height:6px;background:var(--amber);border-radius:2px;margin-right:4px"></span>Trilha 18 meses</span>
+      <span>⚡ Atividade em andamento hoje</span>
+    </div>
+    <div class="gantt-mini" id="gantt-container"></div>
+  </div>
 </div>
 
 <!-- DESVIOS -->
-<div class="page" id="page-desvios">
-  <div style="font-size:15px;font-weight:700;margin-bottom:4px">Registro de desvios</div>
-  <div style="font-size:11px;color:var(--text3);margin-bottom:14px">O que estava previsto e não foi realizado.</div>
+<div class="pg" id="pg-dev">
   <div class="card">
-    <div class="card-title">Novo desvio</div>
-    <div class="form-row"><div class="form-label">Atividade prevista não realizada</div><input type="text" id="dev-ativ" placeholder="Ex: Instalação do tapume perimetral"></div>
-    <div class="grid2">
-      <div class="form-row">
-        <div class="form-label">Classificação</div>
-        <select id="dev-tipo">
-          <option value="">Selecionar...</option>
+    <div class="ct">Novo desvio</div>
+    <div style="margin-bottom:8px"><div class="fl">Atividade não realizada</div><input type="text" id="dv-at" placeholder="Ex: Instalação do tapume perimetral"></div>
+    <div class="g2">
+      <div><div class="fl">Classificação</div>
+        <select id="dv-tp"><option value="">Selecionar...</option>
           <option>Desvio Planejamento — erro de cálculo ou mudança de escopo</option>
           <option>Desvio Suprimentos — compra errada ou atraso de entrega</option>
           <option>Desvio Execução — quebra, desperdício, retrabalho</option>
@@ -224,292 +237,456 @@ select:focus,textarea:focus,input:focus{outline:none;border-color:var(--green)}
           <option>Desvio RH — falta de mão de obra ou absenteísmo</option>
         </select>
       </div>
-      <div class="form-row">
-        <div class="form-label">Responsável pela correção</div>
-        <select id="dev-resp">
-          <option value="">Selecionar...</option>
-          <option>Alexandre (Eng. Civil)</option>
-          <option>Darana (Elétrica)</option>
-          <option>Samuel (Hidro)</option>
-          <option>Leonardo Cruz (Suprimentos)</option>
-          <option>Augusto / Dante (Planejamento)</option>
-          <option>Saniele / Poliana (Contratos)</option>
-          <option>RH / Edinardo</option>
-          <option>TST</option>
-          <option>Gestor (Alex)</option>
+      <div><div class="fl">Responsável pela correção</div>
+        <select id="dv-rp"><option value="">Selecionar...</option>
+          <option>Alexandre (Eng. Civil)</option><option>Darana (Elétrica)</option>
+          <option>Samuel (Hidro)</option><option>Leonardo Cruz (Suprimentos)</option>
+          <option>Augusto/Dante (Planejamento)</option><option>Saniele/Poliana (Contratos)</option>
+          <option>RH / Edinardo</option><option>TST</option><option>Gestor (Alex)</option>
         </select>
       </div>
     </div>
-    <div class="form-row"><div class="form-label">Descrição e impacto</div><textarea id="dev-desc" rows="2" placeholder="O que ocorreu e impacto no cronograma ou custo..."></textarea></div>
-    <div class="form-row"><div class="form-label">Ação corretiva</div><textarea id="dev-acao" rows="2" placeholder="O que será feito e até quando..."></textarea></div>
-    <div class="btn-row">
-      <button class="btn btn-green" onclick="salvarDesvio()">Registrar desvio</button>
-      <button class="btn btn-gray" onclick="limparDesvio()">Limpar</button>
-    </div>
+    <div style="margin-top:8px"><div class="fl">Descrição e impacto</div><textarea id="dv-ds" rows="2" placeholder="O que ocorreu e impacto no cronograma..."></textarea></div>
+    <div style="margin-top:8px"><div class="fl">Ação corretiva e prazo</div><textarea id="dv-ac" rows="2" placeholder="O que será feito e até quando..."></textarea></div>
+    <div class="brow"><button class="btn g" onclick="salvarDev()">Registrar desvio</button><button class="btn x" onclick="limparDev()">Limpar</button></div>
   </div>
-  <div class="card">
-    <div class="card-title">Desvios registrados</div>
-    <div id="lista-desvios"><div class="hist-empty">Nenhum desvio ainda.</div></div>
-  </div>
+  <div class="card"><div class="ct">Desvios registrados <span id="dev-ct" class="bdg br">0</span></div><div id="dev-list"><div class="empty">Nenhum desvio ainda.</div></div></div>
 </div>
 
 <!-- IA -->
-<div class="page" id="page-ia">
-  <div style="font-size:15px;font-weight:700;margin-bottom:4px">Consultar IA — CC 370</div>
-  <div style="font-size:11px;color:var(--text3);margin-bottom:14px">Tire dúvidas sobre contrato, PGE, sequência executiva e critérios TJMG.</div>
+<div class="pg" id="pg-ia">
   <div class="card" style="padding:12px">
-    <div class="card-title">Perguntas rápidas</div>
-    <div class="quick-qs">
-      <div class="qbtn" onclick="askQ('Qual o teto de custo direto do mês de agosto para ficar na meta de excelência?')">Teto CD agosto</div>
-      <div class="qbtn" onclick="askQ('Quais serviços posso iniciar agora em junho e o que está bloqueado?')">O que iniciar agora</div>
-      <div class="qbtn" onclick="askQ('Como calcular a medição do mês 1 aplicando o Fator K e o BDI correto?')">Como calcular medição M1</div>
-      <div class="qbtn" onclick="askQ('Quais documentos estão faltando para iniciar a obra?')">Docs faltando</div>
-      <div class="qbtn" onclick="askQ('Qual a sequência correta para fundação profunda e o que o TJMG exige antes da superestrutura?')">Sequência fundação</div>
-      <div class="qbtn" onclick="askQ('O que é CIA e quando devo abrir uma no SGI?')">O que é CIA</div>
-      <div class="qbtn" onclick="askQ('Quais são os critérios de levantamento do TJMG para medição de estacas hélice?')">Medição estacas</div>
-      <div class="qbtn" onclick="askQ('Qual o CD Ótimo total dos 4 primeiros meses e como está distribuído?')">CD Ótimo 4 meses</div>
+    <div class="ct">Assistente IA — CC 370 Pirapora</div>
+    <div class="qq">
+      <div class="qb" onclick="askQ('Quais atividades devo concluir esta semana para ficar no cronograma de 16 meses?')">Atividades da semana</div>
+      <div class="qb" onclick="askQ('Qual o teto de custo direto do mês de agosto para meta de excelência?')">Teto CD agosto</div>
+      <div class="qb" onclick="askQ('O que está atrasado no cronograma de 16 meses hoje?')">O que está atrasado</div>
+      <div class="qb" onclick="askQ('Como calcular a medição do mês 1 com Fator K e BDI correto?')">Calcular medição M1</div>
+      <div class="qb" onclick="askQ('Qual a diferença de prazo entre as trilhas de 16 e 18 meses por etapa?')">Diferença 16 vs 18m</div>
+      <div class="qb" onclick="askQ('Quais documentos obrigatórios ainda não foram obtidos?')">Docs pendentes</div>
+      <div class="qb" onclick="askQ('Qual a sequência para fundação e o que o TJMG exige antes da superestrutura?')">Sequência fundação</div>
+      <div class="qb" onclick="askQ('Critérios de medição do TJMG para estacas hélice e controle tecnológico?')">Medição estacas</div>
+      <div class="qb" onclick="askQ('Resumo dos desvios registrados e impacto no cronograma.')">Resumo desvios</div>
     </div>
   </div>
   <div class="card" style="padding:12px">
-    <div class="chat-wrap" id="chat-wrap">
-      <div class="msg ai">Olá, Alex! Sou seu assistente da obra CC 370 — Fórum de Pirapora. Conheço o contrato TJMG, o PGE, a Sequência Executiva e os critérios de medição. Pergunte sobre custos, sequência, documentos ou qualquer dúvida da obra.</div>
+    <div class="cw" id="cw"></div>
+    <div class="ci-row">
+      <input type="text" id="ci" placeholder="Pergunte sobre a obra, custos, sequência, documentos..." onkeydown="if(event.key==='Enter')sendMsg()">
+      <button id="cbtn" onclick="sendMsg()">Enviar</button>
     </div>
-    <div class="chat-input-row">
-      <input type="text" id="chat-input" placeholder="Digite sua pergunta..." onkeydown="if(event.key==='Enter')sendMsg()">
-      <button id="chat-btn" onclick="sendMsg()">Enviar</button>
+  </div>
+  <div class="wap-section">
+    <div class="wap-title">📱 Notificações WhatsApp — 05h00 diário</div>
+    <div class="wap-note">
+      Para receber as atividades do dia às 05h00 no seu grupo do WhatsApp, use o botão abaixo para copiar o resumo e enviar manualmente, ou configure um automação via <strong>Zapier / Make</strong> com a API do Claude conectada ao WhatsApp Business.<br><br>
+      <strong>Resumo de hoje pronto para copiar:</strong>
     </div>
+    <div id="wap-preview" style="background:var(--bg3);border:1px solid var(--border2);border-radius:var(--rs);padding:10px;margin-top:8px;font-size:11px;color:var(--text2);white-space:pre-wrap;line-height:1.7;max-height:200px;overflow-y:auto"></div>
+    <button class="btn g" style="margin-top:8px;font-size:11px;padding:5px 12px" onclick="copiarWap()">📋 Copiar para WhatsApp</button>
   </div>
 </div>
 
 <!-- HISTÓRICO -->
-<div class="page" id="page-historico">
+<div class="pg" id="pg-hist">
   <div style="font-size:15px;font-weight:700;margin-bottom:4px">Histórico de registros</div>
-  <div style="font-size:11px;color:var(--text3);margin-bottom:14px">Todos os dias salvos com checklist e desvios.</div>
-  <div id="historico-container"><div class="hist-empty">Nenhum dia salvo ainda.</div></div>
+  <div style="font-size:11px;color:var(--text3);margin-bottom:14px">Todos os dias salvos com checklist e desvios registrados.</div>
+  <div id="hist-list"><div class="empty">Nenhum dia salvo ainda. Preencha o checklist e clique em "Salvar dia".</div></div>
 </div>
 
-<div class="version-tag" id="version-tag">v1.0 · 15/Jun/2026</div>
+<div class="ver" id="ver">v2.0 — CC 370 Pirapora · 70 atividades programadas · Trilhas 16m e 18m</div>
 
 <script>
-const STORAGE_KEY='cc370_v1';
-const CHECKLIST_ITEMS=[
-  {id:'c01',grupo:'Canteiro e mobilização',nome:'Tapume perimetral instalado',detalhe:'Fechamento do terreno conforme PDR-Tapume',fase:'M1'},
-  {id:'c02',grupo:'Canteiro e mobilização',nome:'Placa de obras instalada',detalhe:'Padrão TJMG — 7,75 m²',fase:'M1'},
-  {id:'c03',grupo:'Canteiro e mobilização',nome:'Barracão de obras montado',detalhe:'Estrutura provisória com escritório e almoxarifado',fase:'M1'},
-  {id:'c04',grupo:'Canteiro e mobilização',nome:'Ligação provisória de água solicitada (COPASA)',detalhe:'Cavalete provisório no passeio',fase:'M1'},
-  {id:'c05',grupo:'Canteiro e mobilização',nome:'Ligação provisória de energia solicitada (CEMIG)',detalhe:'Padrão de energia provisório com medidor',fase:'M1'},
-  {id:'c06',grupo:'Canteiro e mobilização',nome:'Equipe gestora mobilizada e admitida no SGI',detalhe:'Alexandre, Mestre, Encarregado, TST, Vigia, Almoxarife',fase:'M1'},
-  {id:'c07',grupo:'Canteiro e mobilização',nome:'EPI inicial adquirido e distribuído',detalhe:'Capacetes, botas, luvas, óculos, colete',fase:'M1'},
-  {id:'c08',grupo:'Canteiro e mobilização',nome:'Grupos Telegram criados (obra + ESP)',detalhe:'Gestão, Suprimentos, SGI e Produção',fase:'M1'},
-  {id:'c09',grupo:'Documentos e licenças',nome:'Ordem de Serviço recebida do TJMG',detalhe:'Documento oficial de início de obra',fase:'M1'},
-  {id:'c10',grupo:'Documentos e licenças',nome:'CNO registrado na Receita Federal',detalhe:'Cadastro Nacional de Obras — matrícula INSS',fase:'M1'},
-  {id:'c11',grupo:'Documentos e licenças',nome:'Comunicação prévia ao Ministério do Trabalho',detalhe:'NR-18 — antes do primeiro trabalhador',fase:'M1'},
-  {id:'c12',grupo:'Documentos e licenças',nome:'PCMAT elaborado e assinado pelo TST',detalhe:'Programa de Condições e Meio Ambiente de Trabalho',fase:'M1'},
-  {id:'c13',grupo:'Documentos e licenças',nome:'PCMSO elaborado e assinado',detalhe:'Médico do trabalho — NR-7',fase:'M1'},
-  {id:'c14',grupo:'Documentos e licenças',nome:'Alvará de construção obtido',detalhe:'Prefeitura de Pirapora — fixar na obra',fase:'M1'},
-  {id:'c15',grupo:'Documentos e licenças',nome:'Alvará de tapume obtido',detalhe:'Autorização municipal para fechamento da calçada',fase:'M1'},
-  {id:'c16',grupo:'Documentos e licenças',nome:'ARTs dos responsáveis técnicos no CREA',detalhe:'Civil, Elétrico, Mecânico, TST',fase:'M1'},
-  {id:'c17',grupo:'Documentos e licenças',nome:'Seguro Garantia de Execução vigente',detalhe:'Apólice conforme Edital 010/2026',fase:'M1'},
-  {id:'c18',grupo:'Terraplanagem e SPDA',nome:'Licença de supressão arbórea protocolada',detalhe:'Pode levar 15–30 dias para emitir',fase:'M1'},
-  {id:'c19',grupo:'Terraplanagem e SPDA',nome:'Empresa de terraplanagem contratada',detalhe:'Mínimo 3 cotações — Leonardo Cruz (Suprimentos)',fase:'M1'},
-  {id:'c20',grupo:'Terraplanagem e SPDA',nome:'Levantamento planialtimétrico executado',detalhe:'Base para locação e gabarito P5 (174,50m)',fase:'M1'},
-  {id:'c21',grupo:'Terraplanagem e SPDA',nome:'Autorização de bota fora obtida',detalhe:'Área licenciada para descarte de solo',fase:'M2'},
-  {id:'c22',grupo:'Terraplanagem e SPDA',nome:'Limpeza mecanizada do terreno concluída',detalhe:'11.180 m² — supressão + destocamento + corte',fase:'M2'},
-  {id:'c23',grupo:'Fundação profunda',nome:'Estacaria contratada (hélice contínua)',detalhe:'PRAZO LIMITE: 30/Jun — risco de atraso M3',fase:'M1'},
-  {id:'c24',grupo:'Fundação profunda',nome:'SPDA fase solo executada (malha + hastes)',detalhe:'Antes da concretagem — janela única',fase:'M2'},
-  {id:'c25',grupo:'Fundação profunda',nome:'Locação da fundação profunda (gabarito)',detalhe:'Topografia para marcação das estacas',fase:'M2'},
-  {id:'c26',grupo:'Fundação profunda',nome:'Execução das estacas hélice iniciada',detalhe:'Medição em metros de profundidade escavada',fase:'M2'},
-  {id:'c27',grupo:'Fundação profunda',nome:'Execução das estacas hélice concluída',detalhe:'100% das estacas executadas e aceitas',fase:'M3'},
-  {id:'c28',grupo:'Fundação profunda',nome:'Prova de Carga Estática (PCE) executada',detalhe:'Laudo obrigatório — condição para superestrutura',fase:'M3'},
-  {id:'c29',grupo:'Fundação profunda',nome:'Prova de Carga Dinâmica (PDA) executada',detalhe:'Laudo obrigatório — condição para superestrutura',fase:'M3'},
-  {id:'c30',grupo:'Fundação rasa e reservatórios',nome:'Escavação de valas concluída (454 m³)',detalhe:'Mecanizada — licença de abertura de vala necessária',fase:'M3'},
-  {id:'c31',grupo:'Fundação rasa e reservatórios',nome:'Instalações em solo interno executadas',detalhe:'Tubulações hidro e esgoto antes do baldrame',fase:'M4'},
-  {id:'c32',grupo:'Fundação rasa e reservatórios',nome:'Blocos de coroamento e baldrame executados',detalhe:'Após laudos PCE/PDA aprovados',fase:'M4'},
-  {id:'c33',grupo:'Fundação rasa e reservatórios',nome:'Reservatório de água potável executado',detalhe:'Com tampões em ferro fundido (3 un)',fase:'M4'},
-  {id:'c34',grupo:'Controle tecnológico',nome:'Corpo de prova de concreto coletado e enviado',detalhe:'Controle tecnológico — relatório obrigatório TJMG',fase:'M3'},
-  {id:'c35',grupo:'Controle tecnológico',nome:'Controle de compactação do solo executado',detalhe:'Relatório exigido antes da fundação rasa',fase:'M3'},
-];
+const SK='cc370v2';
+const INICIO=new Date('2026-06-15');
+const FIM16=new Date('2027-10-15');
+const FIM18=new Date('2027-12-15');
 
-const SYSTEM_PROMPT=`Você é o assistente de gestão da obra CC 370 — Fórum TJMG em Pirapora/MG, gerenciada por Alex da Alcance Engenharia.
-OBRA: VGV R$23.991.542,95 | Desconto 9,15% | Fator K 0,9085 | Prazo 18 meses | Início 15/Jun/2026 | Término 15/Dez/2027
-META EXCELÊNCIA (20% lucro): CD Ótimo total R$12.864.036,84
-CD ÓTIMO IMPLANTAÇÃO (4 meses): R$1.348.240
-BDI: 22,17% geral | 15,28% VRF/elevador/quadros
-METAS AVANÇO: M1(14/Jul)=2,0% | M2(14/Ago)=4,1% | M3(14/Set)=8,0% | M4(14/Out)=10,5%
-CD ÓTIMO MENSAL PESSOAL: R$55.137/mês — cada mês de atraso queima R$63K (pessoal+equip)
-SEQUÊNCIA OBRIGATÓRIA: 1-Implantação 2-Estruturação 3-Recheio 4-Cobertura 5-Fachada 6-ÁreaExterna 7-Limpeza
-BLOQUEIOS: Superestrutura bloqueada até laudos PCE/PDA | Fechamentos bloqueados até laje liberada | Instalações solo antes do baldrame (janela única)
-EQUIPE: Alexandre(Estrutura) Larissa(ARQ) Samuel(Hidro) Darana(Elétrica) Leonardo(Suprimentos) Augusto/Dante(Planejamento) Saniele/Poliana(Contratos)
-CRITÉRIOS TJMG: Fator K 0,9085 obrigatório | Estacas em metros escavados | Estrutura levantamento elemento a elemento | Instalações por verba % com laudo
-Responda de forma direta e prática. Sempre em português.`;
+const ATV=[{"id":"a01","nome":"Canteiro de obras e mobilização","detalhe":"Montar tapume, barracão, ligações provisórias, CFTV e placa de obra","grupo":"implantacao","fase":1,"inicio":"2026-06-15","fim16":"2026-07-10","fim18":"2026-07-15","dur16":25,"dur18":30},{"id":"a02","nome":"Terraplanagem e limpeza do terreno","detalhe":"Supressão arbórea, destocamento, corte e nivelamento (11.180 m²)","grupo":"implantacao","fase":1,"inicio":"2026-06-20","fim16":"2026-07-10","fim18":"2026-07-15","dur16":20,"dur18":25},{"id":"a03","nome":"Licenças e documentos iniciais","detalhe":"OS, CNO, PCMAT, PCMSO, ARTs, alvarás prefeitura e comunicação MTE","grupo":"implantacao","fase":1,"inicio":"2026-06-15","fim16":"2026-06-30","fim18":"2026-07-05","dur16":15,"dur18":20},{"id":"a04","nome":"SPDA fase solo — malha e hastes","detalhe":"Eletrodo aterramento Re-bar, malha inferior e hastes de cobre antes das fundações","grupo":"implantacao","fase":1,"inicio":"2026-07-05","fim16":"2026-07-20","fim18":"2026-07-23","dur16":15,"dur18":18},{"id":"a05","nome":"Fundação profunda — estacas hélice","detalhe":"Locação, execução das estacas e coleta de CPs de concreto (medição em metros escavados)","grupo":"implantacao","fase":1,"inicio":"2026-07-10","fim16":"2026-08-14","fim18":"2026-08-19","dur16":35,"dur18":40},{"id":"a06","nome":"Provas de carga PCE e PDA","detalhe":"Prova de carga estática e dinâmica — laudos obrigatórios antes da superestrutura","grupo":"implantacao","fase":1,"inicio":"2026-08-09","fim16":"2026-08-19","fim18":"2026-08-21","dur16":10,"dur18":12},{"id":"a07","nome":"Fundação rasa — blocos e baldrame","detalhe":"Escavação de valas (454 m³), blocos de coroamento, arranques e vigas baldrame","grupo":"implantacao","fase":1,"inicio":"2026-08-14","fim16":"2026-09-08","fim18":"2026-09-13","dur16":25,"dur18":30},{"id":"a08","nome":"Instalações em solo interno","detalhe":"Tubulações hidro e esgoto enterradas — janela única antes da concretagem do baldrame","grupo":"implantacao","fase":1,"inicio":"2026-08-19","fim16":"2026-09-08","fim18":"2026-09-13","dur16":20,"dur18":25},{"id":"a09","nome":"Reservatórios enterrados","detalhe":"Cisterna de água potável com tampões em ferro fundido (3 un)","grupo":"implantacao","fase":1,"inicio":"2026-08-24","fim16":"2026-09-13","fim18":"2026-09-18","dur16":20,"dur18":25},{"id":"a10","nome":"Controle tecnológico — fundação","detalhe":"CPs concreto estacas, compactação do solo e relatórios para medição TJMG","grupo":"implantacao","fase":1,"inicio":"2026-08-09","fim16":"2026-09-08","fim18":"2026-09-13","dur16":30,"dur18":35},{"id":"a11","nome":"Superestrutura — pilares 1º pavimento","detalhe":"Armação, forma, concretagem e desforma dos pilares do 1º pavimento","grupo":"estruturacao","fase":2,"inicio":"2026-09-08","fim16":"2026-10-03","fim18":"2026-10-08","dur16":25,"dur18":30},{"id":"a12","nome":"Superestrutura — laje 1º pavimento","detalhe":"Laje treliçada pré-moldada — armação, concretagem e cimbramento/descimbramento","grupo":"estruturacao","fase":2,"inicio":"2026-09-28","fim16":"2026-10-18","fim18":"2026-10-23","dur16":20,"dur18":25},{"id":"a13","nome":"Superestrutura — pilares 2º pavimento","detalhe":"Armação, forma, concretagem e desforma dos pilares do 2º pavimento","grupo":"estruturacao","fase":2,"inicio":"2026-10-13","fim16":"2026-11-07","fim18":"2026-11-12","dur16":25,"dur18":30},{"id":"a14","nome":"Superestrutura — laje 2º pavimento","detalhe":"Laje treliçada pré-moldada 2º pavimento","grupo":"estruturacao","fase":2,"inicio":"2026-11-02","fim16":"2026-11-22","fim18":"2026-11-27","dur16":20,"dur18":25},{"id":"a15","nome":"Superestrutura — pilares 3º pavimento","detalhe":"Armação, forma, concretagem e desforma dos pilares do 3º pavimento","grupo":"estruturacao","fase":2,"inicio":"2026-11-17","fim16":"2026-12-12","fim18":"2026-12-17","dur16":25,"dur18":30},{"id":"a16","nome":"Superestrutura — laje 3º pavimento","detalhe":"Laje treliçada pré-moldada 3º pavimento","grupo":"estruturacao","fase":2,"inicio":"2026-12-07","fim16":"2026-12-27","fim18":"2027-01-01","dur16":20,"dur18":25},{"id":"a17","nome":"Reservatório superior e cobertura estrutural","detalhe":"Laje da caixa d'água superior e platibanda estrutural","grupo":"estruturacao","fase":2,"inicio":"2026-12-22","fim16":"2027-01-11","fim18":"2027-01-16","dur16":20,"dur18":25},{"id":"a18","nome":"Instalações embutidas na estrutura","detalhe":"Eletrodutos, caixas de passagem e tubulações embutidas em pilares/lajes — paralelo à estrutura","grupo":"estruturacao","fase":2,"inicio":"2026-09-13","fim16":"2026-12-12","fim18":"2027-01-01","dur16":90,"dur18":110},{"id":"a19","nome":"Controle tecnológico — concreto estrutural","detalhe":"CPs de concreto por pavimento, ensaios e relatórios — durante toda a estruturação","grupo":"estruturacao","fase":2,"inicio":"2026-09-08","fim16":"2027-01-06","fim18":"2027-01-26","dur16":120,"dur18":140},{"id":"a20","nome":"Guarita — estrutura e acabamento","detalhe":"Fundação, superestrutura, vedação, revestimento e instalações da guarita","grupo":"area_externa","fase":6,"inicio":"2026-09-08","fim16":"2026-12-17","fim18":"2027-01-06","dur16":100,"dur18":120},{"id":"a21","nome":"Alvenaria de vedação — 1º pavimento","detalhe":"Bloco cerâmico furado — vedação conforme projeto, com encunhamento","grupo":"recheio","fase":3,"inicio":"2026-11-17","fim16":"2026-12-17","fim18":"2026-12-22","dur16":30,"dur18":35},{"id":"a22","nome":"Alvenaria de vedação — 2º pavimento","detalhe":"Bloco cerâmico furado — 2º pavimento","grupo":"recheio","fase":3,"inicio":"2026-12-07","fim16":"2027-01-06","fim18":"2027-01-11","dur16":30,"dur18":35},{"id":"a23","nome":"Alvenaria de vedação — 3º pavimento","detalhe":"Bloco cerâmico furado — 3º pavimento","grupo":"recheio","fase":3,"inicio":"2026-12-27","fim16":"2027-01-26","fim18":"2027-01-31","dur16":30,"dur18":35},{"id":"a24","nome":"Drywall e steel frame — interno","detalhe":"Divisórias internas em drywall e fechamento de shafts conforme PDR","grupo":"recheio","fase":3,"inicio":"2026-12-27","fim16":"2027-02-05","fim18":"2027-02-15","dur16":40,"dur18":50},{"id":"a25","nome":"Revestimento argamassa — chapisco e reboco","detalhe":"Chapisco, emboço e reboco interno — medição em m² descontando vãos reais","grupo":"recheio","fase":3,"inicio":"2027-01-11","fim16":"2027-03-02","fim18":"2027-03-12","dur16":50,"dur18":60},{"id":"a26","nome":"Impermeabilização interna","detalhe":"Banheiros, caixas e áreas molhadas — manta asfáltica e argamassa polimérica","grupo":"recheio","fase":3,"inicio":"2027-01-21","fim16":"2027-02-20","fim18":"2027-02-25","dur16":30,"dur18":35},{"id":"a27","nome":"Instalações elétricas — embutidas","detalhe":"Eletrodutos, caixas, cabeamento e quadros — paralelo ao recheio","grupo":"recheio","fase":3,"inicio":"2026-11-22","fim16":"2027-02-10","fim18":"2027-02-25","dur16":80,"dur18":95},{"id":"a28","nome":"Instalações hidrossanitárias — internas","detalhe":"Ramais, colunas, louças provisórias — conforme LM A.19.01","grupo":"recheio","fase":3,"inicio":"2026-11-27","fim16":"2027-02-10","fim18":"2027-02-25","dur16":75,"dur18":90},{"id":"a29","nome":"Instalações SPDA — verticais","detalhe":"Condutores de descida, caixas de inspeção e conexões com malha","grupo":"recheio","fase":3,"inicio":"2026-12-02","fim16":"2027-01-11","fim18":"2027-01-21","dur16":40,"dur18":50},{"id":"a30","nome":"Instalações telecom e dados","detalhe":"Cabeamento Cat.6, racks 36U, patch cords — certificação obrigatória","grupo":"recheio","fase":3,"inicio":"2027-01-01","fim16":"2027-02-20","fim18":"2027-03-02","dur16":50,"dur18":60},{"id":"a31","nome":"Instalações HVAC — VRF","detalhe":"Condensadoras (5 un cobertura) e evaporadoras — BDI 15,28%","grupo":"recheio","fase":3,"inicio":"2027-01-11","fim16":"2027-02-25","fim18":"2027-03-07","dur16":45,"dur18":55},{"id":"a32","nome":"Instalações PCI — hidrantes e sprinklers","detalhe":"Casa de bombas, rede de incêndio, aprovação CBMMG","grupo":"recheio","fase":3,"inicio":"2027-01-01","fim16":"2027-02-20","fim18":"2027-03-02","dur16":50,"dur18":60},{"id":"a33","nome":"Impermeabilização da cobertura","detalhe":"Regularização, impermeabilização e proteção mecânica — 3 itens separados na medição","grupo":"cobertura","fase":4,"inicio":"2027-01-06","fim16":"2027-01-31","fim18":"2027-02-05","dur16":25,"dur18":30},{"id":"a34","nome":"Engradamento metálico e telhamento","detalhe":"Pontaletes, terças e telhas — medição em m² de projeção horizontal","grupo":"cobertura","fase":4,"inicio":"2027-01-16","fim16":"2027-02-05","fim18":"2027-02-10","dur16":20,"dur18":25},{"id":"a35","nome":"Calhas, rufos e contra-rufos","detalhe":"Medição em m de comprimento real inclinado — conforme PDR-Cobertura-REV4","grupo":"cobertura","fase":4,"inicio":"2027-01-31","fim16":"2027-02-15","fim18":"2027-02-18","dur16":15,"dur18":18},{"id":"a36","nome":"Instalações cobertura — SPDA captores","detalhe":"Captores, estais, fixação — conforme LM A.19.03","grupo":"cobertura","fase":4,"inicio":"2027-01-21","fim16":"2027-02-05","fim18":"2027-02-08","dur16":15,"dur18":18},{"id":"a37","nome":"Reservatório superior — acabamento","detalhe":"Revestimento interno, tampa e acessórios da caixa d'água","grupo":"cobertura","fase":4,"inicio":"2027-01-26","fim16":"2027-02-10","fim18":"2027-02-13","dur16":15,"dur18":18},{"id":"a38","nome":"Revestimento externo — chapisco e reboco","detalhe":"Chapisco, emboço e reboco externo — espalas medidas separado no externo","grupo":"fachada","fase":5,"inicio":"2027-01-26","fim16":"2027-03-07","fim18":"2027-03-17","dur16":40,"dur18":50},{"id":"a39","nome":"Glazings — esquadrias de vidro","detalhe":"Pele de vidro estrutural conforme FL15 e FL16 — medição em m²","grupo":"fachada","fase":5,"inicio":"2027-02-25","fim16":"2027-03-27","fim18":"2027-04-04","dur16":30,"dur18":38},{"id":"a40","nome":"Brises metálicos","detalhe":"Instalação dos brises conforme projeto — PDR específico","grupo":"fachada","fase":5,"inicio":"2027-03-07","fim16":"2027-04-01","fim18":"2027-04-06","dur16":25,"dur18":30},{"id":"a41","nome":"Pintura externa","detalhe":"Preparação e pintura de fachada, letreiro e guarda-corpo","grupo":"fachada","fase":5,"inicio":"2027-03-17","fim16":"2027-04-11","fim18":"2027-04-16","dur16":25,"dur18":30},{"id":"a42","nome":"Guarda-corpo e corrimão externos","detalhe":"Medição em m de comprimento inclinado — PDR-GC110 e GC130","grupo":"fachada","fase":5,"inicio":"2027-03-12","fim16":"2027-04-01","fim18":"2027-04-06","dur16":20,"dur18":25},{"id":"a43","nome":"ACM e revestimentos especiais fachada","detalhe":"Painéis ACM, revestimentos especiais e acabamento das juntas de dilatação","grupo":"fachada","fase":5,"inicio":"2027-03-02","fim16":"2027-04-01","fim18":"2027-04-06","dur16":30,"dur18":35},{"id":"a44","nome":"Piso cerâmico e granito — 1º pavimento","detalhe":"Contrapiso, cerâmica e granito — medição em m² descontando vãos","grupo":"acabamentos","fase":3,"inicio":"2027-02-25","fim16":"2027-03-22","fim18":"2027-03-27","dur16":25,"dur18":30},{"id":"a45","nome":"Piso cerâmico e granito — 2º pavimento","detalhe":"Contrapiso, cerâmica e granito 2º pavimento","grupo":"acabamentos","fase":3,"inicio":"2027-03-12","fim16":"2027-04-06","fim18":"2027-04-11","dur16":25,"dur18":30},{"id":"a46","nome":"Piso cerâmico e granito — 3º pavimento","detalhe":"Contrapiso, cerâmica e granito 3º pavimento","grupo":"acabamentos","fase":3,"inicio":"2027-03-27","fim16":"2027-04-21","fim18":"2027-04-26","dur16":25,"dur18":30},{"id":"a47","nome":"Piso vinílico — salas e escritórios","detalhe":"Piso vinílico nas salas de audiência e escritórios conforme especificação","grupo":"acabamentos","fase":3,"inicio":"2027-04-06","fim16":"2027-04-26","fim18":"2027-05-01","dur16":20,"dur18":25},{"id":"a48","nome":"Forro mineral e gesso","detalhe":"Forro modular mineral e gesso acartonado — medição em m² por pavimento","grupo":"acabamentos","fase":3,"inicio":"2027-03-12","fim16":"2027-04-16","fim18":"2027-04-23","dur16":35,"dur18":42},{"id":"a49","nome":"Esquadrias de madeira — portas","detalhe":"Portas prontas em laminado Tauari com marcos e ferragens — medição por UN","grupo":"acabamentos","fase":3,"inicio":"2027-03-27","fim16":"2027-04-21","fim18":"2027-04-26","dur16":25,"dur18":30},{"id":"a50","nome":"Esquadrias metálicas — grades e cancelo","detalhe":"Grades, cancelo e alçapões — medição em m² de elevação","grupo":"acabamentos","fase":3,"inicio":"2027-03-22","fim16":"2027-04-16","fim18":"2027-04-21","dur16":25,"dur18":30},{"id":"a51","nome":"Revestimento cerâmico banheiros","detalhe":"Paredes e pisos dos banheiros conforme LM — medição em m² descontando vãos","grupo":"acabamentos","fase":3,"inicio":"2027-03-02","fim16":"2027-04-01","fim18":"2027-04-07","dur16":30,"dur18":36},{"id":"a52","nome":"Louças e metais sanitários","detalhe":"Bacias Celite/Deca, lavatórios, torneiras automáticas — conforme LM A.19.01","grupo":"acabamentos","fase":3,"inicio":"2027-04-11","fim16":"2027-05-01","fim18":"2027-05-06","dur16":20,"dur18":25},{"id":"a53","nome":"Bancadas e acessórios banheiros","detalhe":"Bancadas em granito, barras de apoio PcD, cabides e acessórios","grupo":"acabamentos","fase":3,"inicio":"2027-04-21","fim16":"2027-05-06","fim18":"2027-05-09","dur16":15,"dur18":18},{"id":"a54","nome":"Pintura interna — emassamento e acrílica","detalhe":"Emassamento PVA + pintura acrílica — medição em m² de parede interna","grupo":"acabamentos","fase":3,"inicio":"2027-04-06","fim16":"2027-05-11","fim18":"2027-05-18","dur16":35,"dur18":42},{"id":"a55","nome":"Marcenaria — armários e bancadas","detalhe":"Armários embutidos e bancadas conforme projeto de arquitetura","grupo":"acabamentos","fase":3,"inicio":"2027-05-01","fim16":"2027-05-21","fim18":"2027-05-26","dur16":20,"dur18":25},{"id":"a56","nome":"Sinalização visual interna","detalhe":"Placas conforme PDR-Sinalização V1-R00 — medição por UN por tipo","grupo":"acabamentos","fase":3,"inicio":"2027-05-16","fim16":"2027-05-31","fim18":"2027-06-03","dur16":15,"dur18":18},{"id":"a57","nome":"Elevador — instalação e startup","detalhe":"Equipamento, adequações e comissionamento — BDI 15,28%","grupo":"acabamentos","fase":3,"inicio":"2027-04-11","fim16":"2027-05-06","fim18":"2027-05-11","dur16":25,"dur18":30},{"id":"a58","nome":"Pavimentação externa — estacionamento","detalhe":"Subleito drenante e pavimentação asfáltica ou intertravado","grupo":"area_externa","fase":6,"inicio":"2027-04-06","fim16":"2027-05-06","fim18":"2027-05-14","dur16":30,"dur18":38},{"id":"a59","nome":"Calçadas e passeios externos","detalhe":"Cerâmica, intertravado e piso tátil externo — conforme PDR-PisoTatil-REV4","grupo":"area_externa","fase":6,"inicio":"2027-04-21","fim16":"2027-05-16","fim18":"2027-05-21","dur16":25,"dur18":30},{"id":"a60","nome":"Gradil, portões e fechamento perimetral","detalhe":"Gradil metálico, portões e alambrado conforme PDR-Muro e Gradil-REV4","grupo":"area_externa","fase":6,"inicio":"2027-04-21","fim16":"2027-05-16","fim18":"2027-05-21","dur16":25,"dur18":30},{"id":"a61","nome":"Paisagismo e gramado","detalhe":"Gramas em m² e mudas por UN — conforme projeto de paisagismo","grupo":"area_externa","fase":6,"inicio":"2027-05-21","fim16":"2027-06-05","fim18":"2027-06-10","dur16":15,"dur18":20},{"id":"a62","nome":"Mastros, bicicletário e sombreador","detalhe":"Mastros PDR-REV3, bicicletário inox e sombreadores de estacionamento","grupo":"area_externa","fase":6,"inicio":"2027-05-21","fim16":"2027-05-31","fim18":"2027-06-02","dur16":10,"dur18":12},{"id":"a63","nome":"Instalações externas — SPDA/elétrica/hidro","detalhe":"Iluminação externa, hidrantes externos e SPDA da área externa","grupo":"area_externa","fase":6,"inicio":"2027-04-06","fim16":"2027-05-16","fim18":"2027-05-24","dur16":40,"dur18":48},{"id":"a64","nome":"Limpeza bruta interna","detalhe":"Remoção de entulho, limpeza de pisos e paredes após todos os acabamentos","grupo":"entrega","fase":7,"inicio":"2027-05-31","fim16":"2027-06-10","fim18":"2027-06-12","dur16":10,"dur18":12},{"id":"a65","nome":"As built — levantamento e desenho","detalhe":"Levantamento de todas as disciplinas em formato digital — condição pagamento final","grupo":"entrega","fase":7,"inicio":"2027-05-01","fim16":"2027-05-31","fim18":"2027-06-10","dur16":30,"dur18":40},{"id":"a66","nome":"Checklist de entrega TJMG","detalhe":"Ficha de verificação item a item conforme critérios da DENGEP/TJMG","grupo":"entrega","fase":7,"inicio":"2027-06-10","fim16":"2027-06-20","fim18":"2027-06-22","dur16":10,"dur18":12},{"id":"a67","nome":"Limpeza fina para entrega","detalhe":"Limpeza com produtos específicos para entrega ao cliente","grupo":"entrega","fase":7,"inicio":"2027-06-18","fim16":"2027-06-26","fim18":"2027-06-28","dur16":8,"dur18":10},{"id":"a68","nome":"Manuais técnicos e documentação final","detalhe":"Manuais de todos os sistemas, garantias e documentação as built","grupo":"entrega","fase":7,"inicio":"2027-06-05","fim16":"2027-06-20","fim18":"2027-06-25","dur16":15,"dur18":20},{"id":"a69","nome":"Vistoria final com fiscalização TJMG","detalhe":"Vistoria com DENGEP/GEPRO — aprovação para emissão do habite-se","grupo":"entrega","fase":7,"inicio":"2027-06-24","fim16":"2027-06-29","fim18":"2027-07-01","dur16":5,"dur18":7},{"id":"a70","nome":"Desmobilização do canteiro","detalhe":"Retirada de equipamentos, barracão e tapume","grupo":"entrega","fase":7,"inicio":"2027-06-25","fim16":"2027-07-03","fim18":"2027-07-05","dur16":8,"dur18":10}];
 
-let state={checklist:{},desvios:[],historico:[],avanco:0,custo:0,chat:[]};
+const GRUPOS_LABEL={implantacao:'Etapa 1 — Implantação',estruturacao:'Etapa 2 — Estruturação',recheio:'Etapa 3 — Recheio',acabamentos:'Acabamentos',cobertura:'Etapa 4 — Cobertura',fachada:'Etapa 5 — Fachada',area_externa:'Etapa 6 — Área Externa',entrega:'Etapa 7 — Limpeza e Entrega'};
+const GRUPOS_ORDER=['implantacao','estruturacao','recheio','acabamentos','cobertura','fachada','area_externa','entrega'];
 
-function loadState(){
-  try{const s=localStorage.getItem(STORAGE_KEY);if(s)state=JSON.parse(s);}catch(e){}
-  renderAll();
+const SYSPROMPT=`Você é o assistente de gestão da obra CC 370 — Fórum TJMG em Pirapora/MG, gerenciada por Alex da Alcance Engenharia.
+
+OBRA: VGV R$23.991.542,95 | Fator K 0,9085 | BDI 22,17% geral / 15,28% VRF+elevador+quadros
+METAS: Trilha 16 meses → entrega 15/Out/2027 | Trilha 18 meses → entrega 15/Dez/2027
+INÍCIO: 15/Jun/2026 | CC: 370 | SGI: lançar avanço todo sábado
+
+CD ÓTIMO (meta excelência 20% lucro): Total R$12.864.036,84 | 4 meses implantação R$1.348.240
+CD ÓTIMO MENSAL PESSOAL: R$55.137/mês — cada mês extra de prazo queima R$63K
+
+TRILHA 16M — calendário de macroentregas:
+- Implantação: Jun-Set/2026
+- Estruturação: Set/2026-Jan/2027 (paralelo ao recheio a partir de Nov/2026)
+- Recheio+Cobertura: Jan-Mar/2027
+- Fachada: Jan-Abr/2027
+- Acabamentos: Fev-Mai/2027
+- Área Externa: Abr-Jun/2027
+- Entrega: Mai-Out/2027
+
+TRILHA 18M — mesmos marcos com 30-45 dias a mais por etapa.
+
+DIFERENÇA 16m vs 18m: 61 dias a menos na trilha de 16 meses. Cada etapa é ~10-15% mais apertada. Para 16 meses é necessário paralelismo máximo entre etapas, equipe reforçada e zero atraso em suprimentos críticos (estacas, concreteira, esquadrias).
+
+SEQUÊNCIA OBRIGATÓRIA (Alcance): 1-Implantação 2-Estruturação+Guarita 3-Recheio 4-Cobertura 5-Fachada 6-ÁreaExterna 7-Entrega
+LÓGICA LETRAS (PTs): Letra A = infraestrutura urgente e imediata | B e C = acabamentos de longo prazo
+
+BLOQUEIOS CRÍTICOS:
+- Superestrutura: bloqueada até laudos PCE/PDA aprovados
+- Fechamentos: bloqueados até laje do pavimento descimbrada
+- Instalações solo: janela única antes do baldrame (impossível refazer)
+- As built: condição para liberação do último pagamento
+
+EQUIPE: Alexandre(Estrutura) Larissa(ARQ) Samuel(Hidro) Darana(Elétrica) Leonardo(Suprimentos) Augusto/Dante(Planejamento) Saniele/Poliana(Contratos) ITA:Bruno+Ricardo
+SUPRIMENTOS CRÍTICOS 16m: estacaria (contratar até 30/Jun), concreteira (alinhar Jul), esquadrias de alumínio (pedir Jul para entrega Set), VRF (pedido Out/2026)
+
+CRITÉRIOS TJMG (medições):
+- Fator K 0,9085 em todos os itens
+- Estacas: metros escavados (não cravados)
+- Estrutura: levantamento elemento a elemento
+- Instalações: verba % com laudo de comissionamento
+- As built: condição para último pagamento
+
+DESVIOS (classificação Alcance):
+- Planejamento: erro de cálculo ou mudança de escopo pelo cliente
+- Suprimentos: compra equivocada ou erro de expedição
+- Execução: quebra, desperdício, furto, retrabalho (o pior)
+
+Responda de forma direta, objetiva e prática. Quando houver desvios registrados no state, analise-os. Sempre em português.`;
+
+let state={trail:16,trailCk:16,trailCron:16,checklist:{},desvios:[],historico:[],avanco:0,custo:0,chat:[]};
+
+function ls(){try{const s=localStorage.getItem(SK);if(s)state=JSON.parse(s);}catch(e){}renderAll();}
+function sv(){try{localStorage.setItem(SK,JSON.stringify(state));}catch(e){}}
+function renderAll(){renderDash();renderCheck();renderCron();renderDevs();renderHist();gerarWap();}
+
+function pg(id,tab){
+  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
+  document.getElementById('pg-'+id).classList.add('on');
+  if(tab)tab.classList.add('on');
+  if(id==='ia')gerarWap();
 }
-function saveLS(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(state));}catch(e){}}
 
-function renderAll(){renderChecklist();renderDesvios();renderHistorico();updateDashboard();}
+function hoje(){return new Date();}
+function dk(){return hoje().toISOString().split('T')[0];}
+function dt(s){return new Date(s+'T00:00:00');}
+function fd(d){const ms=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];return`${d.getDate().toString().padStart(2,'0')}/${ms[d.getMonth()]}/${d.getFullYear()}`;}
+function fs(d){const ms=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];return`${d.getDate()}/${ms[d.getMonth()]}`;}
 
-function showPage(id,tab){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  document.getElementById('page-'+id).classList.add('active');
-  if(tab)tab.classList.add('active');
+// Atividades ativas hoje para uma trilha
+function ativasHoje(trail){
+  const now=hoje();
+  return ATV.filter(a=>{
+    const ini=dt(a.inicio);
+    const fim=dt(trail===16?a.fim16:a.fim18);
+    return now>=ini && now<=fim;
+  });
 }
 
-function renderChecklist(){
+function setTrail(t,btn){
+  state.trail=t;
+  document.querySelectorAll('#pg-dash .trail-btn').forEach(b=>b.classList.remove('on16','on18','onb'));
+  btn.classList.add(t===16?'on16':t===18?'on18':'onb');
+  renderDash();sv();
+}
+function setTrailCheck(t,btn){
+  state.trailCk=t;
+  document.querySelectorAll('#pg-check .trail-btn').forEach(b=>b.classList.remove('on16','on18','onb'));
+  btn.classList.add(t===16?'on16':t===18?'on18':'onb');
+  renderCheck();sv();
+}
+function setTrailCron(t,btn){
+  state.trailCron=t;
+  document.querySelectorAll('#pg-cron .trail-btn').forEach(b=>b.classList.remove('on16','on18','onb'));
+  btn.classList.add(t===16?'on16':t===18?'on18':'onb');
+  renderCron();
+}
+
+function renderDash(){
+  const now=hoje();
+  const dias=Math.max(0,Math.floor((now-INICIO)/86400000));
+  document.getElementById('d-dias').textContent=dias;
+  document.getElementById('d-av').textContent=(state.avanco||0).toFixed(1)+'%';
+  const t=state.trail||16;
+  document.getElementById('trail-info-dash').textContent=t===0?'Trilhas 16m e 18m':t===16?'Meta: 15/Out/2027 (16m)':'Meta: 15/Dez/2027 (18m)';
+  const ativas=ativasHoje(t===0?16:t);
+  const ck=state.checklist[dk()]||{};
+  const ok=Object.values(ck).filter(v=>v==='done').length;
+  document.getElementById('d-ok').textContent=ok;
+  document.getElementById('d-tot').textContent='de '+ativas.length+' ativos hoje';
+  document.getElementById('d-dev').textContent=state.desvios.length;
+  const pct=ativas.length?Math.round(ok/ativas.length*100):0;
+  document.getElementById('d-pct').textContent=pct+'%';
+  document.getElementById('d-fill').style.width=pct+'%';
+  document.getElementById('d-custo').textContent='R$'+(state.custo||0).toLocaleString('pt-BR');
+
+  // Atividades de hoje
+  const hoje_el=document.getElementById('d-hoje');
+  if(!ativas.length){hoje_el.innerHTML='<div class="empty">Nenhuma atividade programada para hoje.</div>';document.getElementById('d-nhoje').textContent='0';return;}
+  document.getElementById('d-nhoje').textContent=ativas.length;
+  let h='';
+  ativas.forEach(a=>{
+    const st=ck[a.id]||'pending';
+    const isDone=st==='done';
+    h+=`<div class="ci${isDone?' done':''}" style="cursor:default">
+      <div class="cb${isDone?' c':''}" onclick="toggleFromDash('${a.id}')" style="cursor:pointer">${isDone?'✓':''}</div>
+      <div><div class="cn">${a.nome}</div><div class="cd">${a.detalhe}</div>
+      <div class="cm"><span class="bdg ${gcls(a.grupo)}">${GRUPOS_LABEL[a.grupo]||a.grupo}</span>
+      <span class="bdg bx">até ${fd(dt(t===16?a.fim16:a.fim18))}</span></div></div>
+    </div>`;
+  });
+  hoje_el.innerHTML=h;
+}
+
+function toggleFromDash(id){
+  const today=dk();
+  if(!state.checklist[today])state.checklist[today]={};
+  const cur=state.checklist[today][id]||'pending';
+  state.checklist[today][id]=cur==='done'?'pending':'done';
+  renderDash();renderCheck();sv();
+}
+
+function gcls(g){
+  const m={implantacao:'bg',estruturacao:'bb',recheio:'ba',acabamentos:'ba',cobertura:'bb',fachada:'br',area_externa:'bx',entrega:'br'};
+  return m[g]||'bx';
+}
+
+function renderCheck(){
+  const t=state.trailCk||16;
+  const now=hoje();
+  const ck=state.checklist[dk()]||{};
+  // Agrupar atividades ativas ou com prazo nos próximos 30 dias
+  const visiveis=ATV.filter(a=>{
+    const ini=dt(a.inicio);
+    const fim=dt(t===0?a.fim18:t===16?a.fim16:a.fim18);
+    const fim16=dt(a.fim16);const fim18=dt(a.fim18);
+    if(t===0)return now>=ini&&now<=fim18;
+    return now>=ini&&now<=fim;
+  });
+
+  document.getElementById('trail-info-check').textContent=visiveis.length+' atividades ativas';
+  const ok=Object.values(ck).filter(v=>v==='done').length;
+  const dev=Object.values(ck).filter(v=>v==='desvio').length;
+  document.getElementById('ck-ok').textContent=ok+' ok';
+  document.getElementById('ck-dev').textContent=dev+' desvios';
+
   const grupos={};
-  CHECKLIST_ITEMS.forEach(i=>{if(!grupos[i.grupo])grupos[i.grupo]=[];grupos[i.grupo].push(i);});
-  const today=todayKey();
-  const tc=state.checklist[today]||{};
-  let html='';
-  Object.entries(grupos).forEach(([g,items])=>{
-    const done=items.filter(i=>tc[i.id]==='done').length;
-    const dev=items.filter(i=>tc[i.id]==='desvio').length;
-    html+=`<div class="check-group"><div class="check-group-title">${g}<span style="font-weight:400">${done}/${items.length}${dev?' · '+dev+' desvio(s)':''}</span></div>`;
-    items.forEach(item=>{
-      const st=tc[item.id]||'pending';
+  GRUPOS_ORDER.forEach(g=>{grupos[g]=[];});
+  visiveis.forEach(a=>{if(!grupos[a.grupo])grupos[a.grupo]=[];grupos[a.grupo].push(a);});
+
+  let h='';
+  GRUPOS_ORDER.forEach(g=>{
+    const items=grupos[g];if(!items||!items.length)return;
+    const gok=items.filter(a=>ck[a.id]==='done').length;
+    const gdev=items.filter(a=>ck[a.id]==='desvio').length;
+    h+=`<div class="cg"><div class="cgt">${GRUPOS_LABEL[g]||g}<span style="font-weight:400">${gok}/${items.length}${gdev?' · '+gdev+' dev':''}</span></div>`;
+    items.forEach(a=>{
+      const st=ck[a.id]||'pending';
       const isDone=st==='done',isDev=st==='desvio';
-      const fc=item.fase==='M1'?'badge-green':item.fase==='M2'?'badge-amber':'badge-gray';
-      html+=`<div class="check-item${isDone?' done':''}${isDev?' devio':''}" id="ci-${item.id}">
-        <div class="cb${isDone?' checked':''}${isDev?' blocked':''}" onclick="toggleCheck('${item.id}',event)"></div>
-        <div class="check-info">
-          <div class="check-name">${item.nome}</div>
-          <div class="check-detail">${item.detalhe}</div>
-          <div class="check-meta">
-            <span class="badge ${fc}">${item.fase}</span>
-            ${isDev?'<span class="badge badge-red">desvio</span>':''}
-            <span class="desvio-btn" onclick="abrirDF('${item.id}','${item.nome}',event)">+ registrar desvio</span>
+      const fim=dt(t===0||t===18?a.fim18:a.fim16);
+      const dias_rest=Math.ceil((fim-now)/86400000);
+      const atrasado=dias_rest<0&&!isDone;
+      h+=`<div class="ci${isDone?' done':''}${isDev?' dev':''}${atrasado?' atrasado':''}" id="ci-${a.id}">
+        <div class="cb${isDone?' c':''}${isDev?' d':''}" onclick="toggleCk('${a.id}',event)">${isDone?'✓':isDev?'✕':''}</div>
+        <div class="cn" style="flex:1">
+          <div>${a.nome}${atrasado?` <span style="color:var(--red2);font-size:10px">⚠ ATRASADO ${Math.abs(dias_rest)}d</span>`:''}</div>
+          <div class="cd">${a.detalhe}</div>
+          <div class="cm">
+            <span class="bdg ${gcls(a.grupo)}" style="font-size:9px">${GRUPOS_LABEL[a.grupo]||a.grupo}</span>
+            ${t===0?`<span class="bdg bg" style="font-size:9px">16m: ${fs(dt(a.fim16))}</span><span class="bdg ba" style="font-size:9px">18m: ${fs(dt(a.fim18))}</span>`:`<span class="bdg bx" style="font-size:9px">até ${fd(fim)}</span>`}
+            ${!isDone?`<span class="dbtn" onclick="abrirDF('${a.id}','${a.nome}',event)">+ desvio</span>`:''}
           </div>
-          <div class="desvio-form" id="df-${item.id}">
-            <div class="form-row"><div class="form-label">Tipo</div>
-              <select id="dt-${item.id}"><option>Desvio Planejamento</option><option>Desvio Suprimentos</option><option>Desvio Execução</option><option>Desvio Externo</option><option>Desvio RH</option></select></div>
-            <div class="form-row"><div class="form-label">O que impediu + ação corretiva</div>
-              <textarea id="dd-${item.id}" rows="2" placeholder="Descreva o impedimento e a ação prevista..."></textarea></div>
-            <div class="btn-row">
-              <button class="btn btn-green" style="font-size:11px;padding:4px 10px" onclick="salvarDI('${item.id}','${item.nome}',event)">Salvar</button>
-              <button class="btn btn-gray" style="font-size:11px;padding:4px 10px" onclick="fecharDF('${item.id}',event)">Cancelar</button>
+          <div class="dform" id="df-${a.id}">
+            <div><div class="fl">Tipo do desvio</div>
+              <select id="dt-${a.id}"><option>Desvio Planejamento</option><option>Desvio Suprimentos</option><option>Desvio Execução</option><option>Desvio Externo</option><option>Desvio RH</option></select></div>
+            <div style="margin-top:6px"><div class="fl">O que impediu + ação corretiva</div>
+              <textarea id="dd-${a.id}" rows="2" placeholder="Descreva o impedimento e a ação prevista..."></textarea></div>
+            <div class="brow">
+              <button class="btn g" style="font-size:11px;padding:4px 10px" onclick="salvarDI('${a.id}','${a.nome}',event)">Salvar</button>
+              <button class="btn x" style="font-size:11px;padding:4px 10px" onclick="fecharDF('${a.id}',event)">Cancelar</button>
             </div>
           </div>
         </div>
       </div>`;
     });
-    html+='</div>';
+    h+='</div>';
   });
-  document.getElementById('checklist-container').innerHTML=html;
-  updateBadges();
+  document.getElementById('ck-container').innerHTML=h||'<div class="empty">Nenhuma atividade ativa para a trilha selecionada.</div>';
 }
 
-function toggleCheck(id,e){
-  e.stopPropagation();
-  const today=todayKey();
+function toggleCk(id,e){
+  e&&e.stopPropagation();
+  const today=dk();
   if(!state.checklist[today])state.checklist[today]={};
   const cur=state.checklist[today][id]||'pending';
   state.checklist[today][id]=cur==='done'?'pending':'done';
-  renderChecklist();updateDashboard();saveLS();
+  renderCheck();renderDash();sv();
 }
-function abrirDF(id,nome,e){e.stopPropagation();document.querySelectorAll('.desvio-form').forEach(f=>f.classList.remove('open'));document.getElementById('df-'+id).classList.add('open');}
-function fecharDF(id,e){e.stopPropagation();document.getElementById('df-'+id).classList.remove('open');}
+function abrirDF(id,nome,e){e&&e.stopPropagation();document.querySelectorAll('.dform').forEach(f=>f.classList.remove('on'));const el=document.getElementById('df-'+id);if(el)el.classList.add('on');}
+function fecharDF(id,e){e&&e.stopPropagation();const el=document.getElementById('df-'+id);if(el)el.classList.remove('on');}
 function salvarDI(id,nome,e){
-  e.stopPropagation();
-  const tipo=document.getElementById('dt-'+id).value;
-  const desc=document.getElementById('dd-'+id).value;
-  const today=todayKey();
+  e&&e.stopPropagation();
+  const tipo=document.getElementById('dt-'+id)?.value||'Desvio Execução';
+  const desc=document.getElementById('dd-'+id)?.value||'';
+  const today=dk();
   if(!state.checklist[today])state.checklist[today]={};
   state.checklist[today][id]='desvio';
   state.desvios.push({id:Date.now(),data:today,atividade:nome,tipo,desc,acao:'',resp:'Gestor'});
-  fecharDF(id,e);renderChecklist();renderDesvios();updateDashboard();saveLS();
+  fecharDF(id,e);renderCheck();renderDash();renderDevs();sv();
 }
-function updateBadges(){
-  const today=todayKey();const c=state.checklist[today]||{};
-  document.getElementById('badge-ok').textContent=Object.values(c).filter(v=>v==='done').length+' ok';
-  document.getElementById('badge-dev').textContent=Object.values(c).filter(v=>v==='desvio').length+' desvios';
-}
+
 function salvarDia(){
-  const today=todayKey();const c=state.checklist[today]||{};
-  const ok=Object.values(c).filter(v=>v==='done').length;
-  const dev=Object.values(c).filter(v=>v==='desvio').length;
-  const entry={data:today,ok,dev,total:CHECKLIST_ITEMS.length,desvios:state.desvios.filter(d=>d.data===today)};
+  const today=dk();const ck=state.checklist[today]||{};
+  const ativas=ativasHoje(state.trailCk===0?16:state.trailCk);
+  const ok=Object.values(ck).filter(v=>v==='done').length;
+  const dev=Object.values(ck).filter(v=>v==='desvio').length;
+  const entry={data:today,ok,dev,total:ativas.length,trail:state.trailCk,desvios:state.desvios.filter(d=>d.data===today)};
   const idx=state.historico.findIndex(h=>h.data===today);
   if(idx>-1)state.historico[idx]=entry;else state.historico.unshift(entry);
-  state.avanco=parseFloat((ok/CHECKLIST_ITEMS.length*10.5).toFixed(1));
-  saveLS();renderHistorico();updateDashboard();
-  alert('✅ Dia salvo! Avanço físico: '+state.avanco+'%');
+  state.avanco=ativas.length?parseFloat((ok/ativas.length*10.5).toFixed(1)):0;
+  sv();renderHist();renderDash();
+  alert(`✅ Dia ${fd(hoje())} salvo!\n${ok} concluídas | ${dev} desvios\nAvanço físico: ${state.avanco}%`);
 }
-function renderDesvios(){
-  const el=document.getElementById('lista-desvios');
-  const eu=document.getElementById('ultimos-desvios');
-  if(!state.desvios.length){
-    el.innerHTML='<div class="hist-empty">Nenhum desvio ainda.</div>';
-    eu.innerHTML='<div class="hist-empty" style="padding:12px">Nenhum desvio registrado.</div>';
-    return;
-  }
-  const s=[...state.desvios].reverse();
-  const tc=t=>t.includes('Execução')?'badge-red':t.includes('Suprimentos')?'badge-amber':t.includes('Planejamento')?'badge-blue':'badge-gray';
-  el.innerHTML=s.map(d=>`<div class="hist-item"><div class="hist-date">${fmtDate(d.data)} — <span class="badge ${tc(d.tipo)}">${d.tipo.split('—')[0].trim()}</span></div><div style="font-size:12px;font-weight:500;margin-bottom:3px">${d.atividade}</div>${d.desc?`<div style="font-size:11px;color:var(--text3)">${d.desc}</div>`:''}</div>`).join('');
-  eu.innerHTML=s.slice(0,3).map(d=>`<div style="padding:5px 0;border-bottom:1px solid var(--border);font-size:11px"><span class="badge ${tc(d.tipo)}" style="margin-right:4px">${d.tipo.split('—')[0].trim()}</span><span>${d.atividade}</span></div>`).join('');
+
+function renderCron(){
+  const t=state.trailCron||16;
+  const grupo=document.getElementById('cron-grupo')?.value||'';
+  const now=hoje();
+  const totalDias=t===0?548:t===16?487:548; // dias totais de cada trilha
+  const items=ATV.filter(a=>!grupo||a.grupo===grupo);
+  const grupos={};GRUPOS_ORDER.forEach(g=>{grupos[g]=[];});
+  items.forEach(a=>{if(!grupos[a.grupo])grupos[a.grupo]=[];grupos[a.grupo].push(a);});
+
+  // Gerar labels de meses para o cabeçalho
+  let mHead='<div class="gm-head">';
+  const meses=['Jun26','Jul','Ago','Set','Out','Nov','Dez','Jan27','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez27'];
+  const intervalo=Math.floor(totalDias/meses.length);
+  meses.forEach(m=>{mHead+=`<div class="gm-hcol">${m}</div>`;});
+  mHead+='</div>';
+
+  let html=mHead;
+  GRUPOS_ORDER.forEach(g=>{
+    const gItems=grupos[g];if(!gItems||!gItems.length)return;
+    html+=`<div style="font-size:10px;font-weight:700;color:var(--text3);margin:10px 0 3px 208px;text-transform:uppercase;letter-spacing:.05em">${GRUPOS_LABEL[g]||g}</div>`;
+    gItems.forEach(a=>{
+      const ini=dt(a.inicio);
+      const fim16=dt(a.fim16);const fim18=dt(a.fim18);
+      const iniOff=Math.max(0,(ini-INICIO)/86400000);
+      const off16=iniOff/totalDias*100;
+      const w16=a.dur16/totalDias*100;
+      const off18=iniOff/totalDias*100;
+      const w18=a.dur18/totalDias*100;
+      const isAtiva=now>=ini&&now<=(t===18?fim18:fim16);
+      html+=`<div class="gm-row">
+        <div class="gm-lbl" title="${a.detalhe}">${a.nome.length>32?a.nome.substring(0,30)+'…':a.nome}</div>
+        <div class="gm-track">
+          ${t===0?`<div class="gm-bar-both16" style="left:${off16.toFixed(1)}%;width:${w16.toFixed(1)}%"></div>
+            <div class="gm-bar-both18" style="left:${off18.toFixed(1)}%;width:${w18.toFixed(1)}%"></div>`
+          :`<div class="${t===16?'gm-bar16':'gm-bar18'}" style="left:${(t===16?off16:off18).toFixed(1)}%;width:${(t===16?w16:w18).toFixed(1)}%${isAtiva?';border:1px solid #fff;box-shadow:0 0 4px rgba(255,255,255,.3)':''}"></div>`}
+        </div>
+      </div>`;
+    });
+  });
+  document.getElementById('gantt-container').innerHTML=html;
 }
-function salvarDesvio(){
-  const a=document.getElementById('dev-ativ').value.trim();
-  const t=document.getElementById('dev-tipo').value;
+
+function renderDevs(){
+  const el=document.getElementById('dev-list');
+  document.getElementById('dev-ct').textContent=state.desvios.length;
+  if(!state.desvios.length){el.innerHTML='<div class="empty">Nenhum desvio ainda.</div>';return;}
+  const tc=t=>t.includes('Execução')?'br':t.includes('Suprimentos')?'ba':t.includes('Planejamento')?'bb':'bx';
+  el.innerHTML=[...state.desvios].reverse().map(d=>`
+    <div class="hi"><div class="hd">${fd(dt(d.data))} — <span class="bdg ${tc(d.tipo)}">${d.tipo.split('—')[0].trim()}</span></div>
+    <div style="font-size:12px;font-weight:500">${d.atividade}</div>
+    ${d.desc?`<div style="font-size:11px;color:var(--text3);margin-top:2px">${d.desc}</div>`:''}
+    ${d.acao?`<div style="font-size:11px;color:var(--amber2);margin-top:2px">↳ ${d.acao}</div>`:''}
+    ${d.resp?`<div style="font-size:10px;color:var(--text3);margin-top:3px">Resp: ${d.resp}</div>`:''}
+    </div>`).join('');
+}
+
+function salvarDev(){
+  const a=document.getElementById('dv-at').value.trim();
+  const t=document.getElementById('dv-tp').value;
   if(!a||!t){alert('Preencha a atividade e o tipo.');return;}
-  state.desvios.push({id:Date.now(),data:todayKey(),atividade:a,tipo:t,resp:document.getElementById('dev-resp').value,desc:document.getElementById('dev-desc').value,acao:document.getElementById('dev-acao').value});
-  limparDesvio();renderDesvios();updateDashboard();saveLS();
+  state.desvios.push({id:Date.now(),data:dk(),atividade:a,tipo:t,resp:document.getElementById('dv-rp').value,desc:document.getElementById('dv-ds').value,acao:document.getElementById('dv-ac').value});
+  limparDev();renderDevs();renderDash();sv();
 }
-function limparDesvio(){['dev-ativ','dev-tipo','dev-resp','dev-desc','dev-acao'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});}
-function renderHistorico(){
-  const el=document.getElementById('historico-container');
-  if(!state.historico.length){el.innerHTML='<div class="hist-empty">Nenhum dia salvo ainda.</div>';return;}
-  el.innerHTML=state.historico.map(h=>`<div class="hist-item"><div class="hist-date">${fmtDate(h.data)}</div><div style="font-size:11px;color:#9FE1CB">✓ ${h.ok} atividades concluídas de ${h.total}</div>${h.dev?`<div style="font-size:11px;color:var(--red2)">✕ ${h.dev} desvios</div>`:''}</div>`).join('');
+function limparDev(){['dv-at','dv-tp','dv-rp','dv-ds','dv-ac'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});}
+
+function renderHist(){
+  const el=document.getElementById('hist-list');
+  if(!state.historico.length){el.innerHTML='<div class="empty">Nenhum dia salvo ainda.</div>';return;}
+  el.innerHTML=state.historico.map(h=>`
+    <div class="hi"><div class="hd">${fd(dt(h.data))} — Trilha ${h.trail||16}m</div>
+    <div style="font-size:11px;color:var(--green2)">✓ ${h.ok} de ${h.total} atividades concluídas</div>
+    ${h.dev?`<div style="font-size:11px;color:var(--red2)">✕ ${h.dev} desvios registrados</div>`:''}
+    ${h.desvios&&h.desvios.length?h.desvios.map(d=>`<div style="font-size:10px;color:var(--text3);padding-left:10px">· ${d.atividade}</div>`).join(''):''}
+    </div>`).join('');
 }
-function updateDashboard(){
-  const inicio=new Date('2026-06-15');const now=new Date();
-  const dias=Math.max(0,Math.floor((now-inicio)/(864e5)));
-  document.getElementById('dias-corridos').textContent=dias+' dias corridos';
-  document.getElementById('avanco-val').textContent=(state.avanco||0).toFixed(1)+'%';
-  const today=todayKey();const c=state.checklist[today]||{};
-  const ok=Object.values(c).filter(v=>v==='done').length;
-  document.getElementById('itens-ok').textContent=ok;
-  document.getElementById('desvios-total').textContent=state.desvios.length;
-  const pct=Math.round(ok/CHECKLIST_ITEMS.length*100);
-  document.getElementById('prog-pct').textContent=pct+'%';
-  document.getElementById('prog-fill').style.width=pct+'%';
-  document.getElementById('m1-val').textContent=(state.avanco||0).toFixed(1)+'%';
-  const cpct=Math.round((state.custo||0)/1348240*100);
-  document.getElementById('custo-pct').textContent=cpct+'%';
-  document.getElementById('custo-fill').style.width=Math.min(cpct,100)+'%';
-  document.getElementById('custo-val').textContent='R$ '+(state.custo||0).toLocaleString('pt-BR');
-  renderDesvios();
+
+function gerarWap(){
+  const now=hoje();
+  const t=state.trail||16;
+  const ativas=ativasHoje(t===0?16:t);
+  const ck=state.checklist[dk()]||{};
+  const pendentes=ativas.filter(a=>ck[a.id]!=='done');
+  const novos=ATV.filter(a=>{const ini=dt(a.inicio);return Math.abs(ini-now)<86400000;});
+
+  let txt=`🏗️ *CC 370 — Fórum TJMG Pirapora*\n`;
+  txt+=`📅 ${fd(now)} | Trilha ${t===0?'16+18':t}m\n`;
+  txt+=`⏱️ Dia ${Math.floor((now-INICIO)/86400000)+1} de ${t===16?487:548}\n\n`;
+  if(novos.length){txt+=`🆕 *NOVAS ATIVIDADES HOJE:*\n`;novos.forEach(a=>{txt+=`• ${a.nome}\n  ${a.detalhe}\n`;});txt+='\n';}
+  if(pendentes.length){txt+=`⚡ *PENDENTES (${pendentes.length}):*\n`;pendentes.slice(0,8).forEach(a=>{const fim=dt(t===16?a.fim16:a.fim18);const dr=Math.ceil((fim-now)/86400000);txt+=`• ${a.nome} (${dr>0?dr+'d restantes':'ATRASADO'})\n`;});txt+='\n';}
+  txt+=`✅ Concluídas: ${ativas.filter(a=>ck[a.id]==='done').length}/${ativas.length}\n`;
+  if(state.desvios.length){const rec=state.desvios[state.desvios.length-1];txt+=`⚠️ Último desvio: ${rec.atividade}\n`;}
+  txt+=`\n_Acesse o sistema: https://alexssandroatl.github.io/cc370-pirapora-gestao/_`;
+  const el=document.getElementById('wap-preview');
+  if(el)el.textContent=txt;
 }
-function todayKey(){return new Date().toISOString().split('T')[0];}
-function fmtDate(k){if(!k)return'—';const[y,m,d]=k.split('-');const ms=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];return`${d}/${ms[parseInt(m)-1]}/${y}`;}
+
+function copiarWap(){
+  const txt=document.getElementById('wap-preview')?.textContent;
+  if(!txt)return;
+  navigator.clipboard.writeText(txt).then(()=>alert('✅ Copiado! Cole no seu grupo do WhatsApp.')).catch(()=>{prompt('Copie o texto:',txt);});
+}
+
+// CHAT IA
+function addMsg(t,cls){const w=document.getElementById('cw');const id='m'+Date.now();const d=document.createElement('div');d.className='msg '+cls;d.id=id;d.textContent=t;w.appendChild(d);w.scrollTop=w.scrollHeight;return id;}
+function upMsg(id,t){const e=document.getElementById(id);if(e){e.textContent=t;e.className='msg ai';}document.getElementById('cw').scrollTop=9999;}
 
 async function sendMsg(){
-  const inp=document.getElementById('chat-input');const msg=inp.value.trim();if(!msg)return;
-  inp.value='';addMsg(msg,'user');
-  const lid=addMsg('Consultando...','ai loading');
-  document.getElementById('chat-btn').disabled=true;
-  state.chat.push({role:'user',content:msg});
+  const inp=document.getElementById('ci');const msg=inp.value.trim();if(!msg)return;
+  inp.value='';addMsg(msg,'u');
+  const lid=addMsg('Consultando...','ai ld');
+  document.getElementById('cbtn').disabled=true;
+
+  // Contexto dinâmico baseado no state atual
+  const ativas=ativasHoje(state.trail===0?16:state.trail);
+  const ck=state.checklist[dk()]||{};
+  const ok=ativas.filter(a=>ck[a.id]==='done').length;
+  const ctx=`\n\nCONTEXTO ATUAL (${fd(hoje())}):\nTrilha ativa: ${state.trail===0?'Ambas':state.trail+'m'}\nAtividades hoje: ${ativas.length} | Concluídas: ${ok} | Desvios totais: ${state.desvios.length}\nAvanço físico: ${state.avanco||0}%\nÚltimos desvios: ${state.desvios.slice(-3).map(d=>d.atividade+' ('+d.tipo.split('—')[0].trim()+')').join('; ')||'nenhum'}`;
+
+  state.chat.push({role:'user',content:msg+ctx});
   try{
-    const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,system:SYSTEM_PROMPT,messages:state.chat.slice(-10)})});
+    const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,system:SYSPROMPT,messages:state.chat.slice(-12)})});
     const data=await r.json();
     const text=data.content?.filter(c=>c.type==='text').map(c=>c.text).join('\n')||'Erro na resposta.';
-    updateMsg(lid,text);state.chat.push({role:'assistant',content:text});
-    if(state.chat.length>20)state.chat=state.chat.slice(-20);
-    saveLS();
-  }catch(e){updateMsg(lid,'Erro de conexão. Tente novamente.');}
-  document.getElementById('chat-btn').disabled=false;
+    upMsg(lid,text);
+    state.chat.push({role:'assistant',content:text});
+    if(state.chat.length>24)state.chat=state.chat.slice(-24);
+    sv();
+  }catch(e){upMsg(lid,'Erro de conexão. Verifique sua internet e tente novamente.');}
+  document.getElementById('cbtn').disabled=false;
 }
-function addMsg(t,cls){const w=document.getElementById('chat-wrap');const id='m'+Date.now();const d=document.createElement('div');d.className='msg '+cls;d.id=id;d.textContent=t;w.appendChild(d);w.scrollTop=w.scrollHeight;return id;}
-function updateMsg(id,t){const e=document.getElementById(id);if(e){e.textContent=t;e.className='msg ai';}document.getElementById('chat-wrap').scrollTop=9999;}
-function askQ(q){showPage('ia',document.querySelectorAll('.tab')[3]);document.getElementById('chat-input').value=q;sendMsg();}
 
-document.getElementById('nav-date').textContent=new Date().toLocaleDateString('pt-BR',{weekday:'short',day:'2-digit',month:'short'});
-document.getElementById('version-tag').textContent='v1.0 · Deploy: '+new Date().toLocaleDateString('pt-BR');
-loadState();
+function askQ(q){pg('ia',document.querySelectorAll('.tab')[4]);document.getElementById('ci').value=q;sendMsg();}
+
+// INIT
+document.getElementById('ndate').innerHTML=hoje().toLocaleDateString('pt-BR',{weekday:'short',day:'2-digit',month:'short'})+'<br>'+hoje().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+const initMsg=document.createElement('div');initMsg.className='msg ai';initMsg.textContent='Olá, Alex! Sistema CC 370 atualizado com cronograma completo de 70 atividades nas trilhas de 16 e 18 meses. Hoje há '+(ativasHoje(16).length)+' atividades ativas na trilha de 16m. Posso te ajudar com cronograma, custos, medições, desvios ou qualquer dúvida da obra.';document.getElementById('cw').appendChild(initMsg);
+ls();
 </script>
 </body>
 </html>
