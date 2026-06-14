@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CC 370 — Gestão Pirapora</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0f1117;--bg2:#1a1d27;--bg3:#22253a;--bg4:#2d3150;
+  --border:#2d3150;--border2:#3d4170;
+  --green:#1D9E75;--green2:#9FE1CB;
+  --amber:#EF9F27;--amber2:#FAC775;
+  --red:#E24B4A;--red2:#F09595;
+  --blue:#378ADD;--blue2:#85B7EB;
+  --text:#F0F2F8;--text2:#A0A8C0;--text3:#606880;
+  --radius:10px;--radius-sm:6px;
+}
+body{background:var(--bg);color:var(--text);font-family:system-ui,sans-serif;font-size:13px;line-height:1.5;min-height:100vh}
+.nav{display:flex;align-items:center;gap:0;border-bottom:1px solid var(--border);background:var(--bg2);position:sticky;top:0;z-index:100;flex-wrap:wrap}
+.nav-brand{padding:10px 16px;font-size:12px;font-weight:600;color:var(--text2);border-right:1px solid var(--border);white-space:nowrap}
+.nav-brand span{color:var(--green);font-size:10px;display:block;font-weight:400}
+.nav-tabs{display:flex;gap:0;flex:1;overflow-x:auto}
+.tab{padding:10px 14px;font-size:12px;font-weight:500;color:var(--text3);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all .15s}
+.tab:hover{color:var(--text2)}
+.tab.active{color:var(--text);border-bottom-color:var(--green)}
+.nav-date{padding:10px 14px;font-size:11px;color:var(--text3);border-left:1px solid var(--border);white-space:nowrap}
+.page{display:none;padding:16px;max-width:900px;margin:0 auto}
+.page.active{display:block}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-bottom:12px}
+.card-title{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+@media(max-width:600px){.grid4{grid-template-columns:repeat(2,1fr)}.grid2{grid-template-columns:1fr}}
+.metric{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px}
+.metric-label{font-size:10px;color:var(--text3);margin-bottom:3px}
+.metric-val{font-size:18px;font-weight:700;color:var(--text)}
+.metric-val.green{color:var(--green)}
+.metric-val.amber{color:var(--amber)}
+.metric-val.red{color:var(--red)}
+.metric-sub{font-size:10px;color:var(--text3);margin-top:2px}
+.prog-wrap{margin:8px 0}
+.prog-label{display:flex;justify-content:space-between;font-size:11px;color:var(--text3);margin-bottom:4px}
+.prog-track{height:6px;background:var(--bg4);border-radius:3px;overflow:hidden}
+.prog-fill{height:6px;border-radius:3px;transition:width .5s;background:var(--green)}
+.prog-fill.amber{background:var(--amber)}
+.badge{display:inline-flex;align-items:center;font-size:10px;font-weight:600;padding:2px 7px;border-radius:20px}
+.badge-green{background:rgba(29,158,117,.15);color:var(--green2)}
+.badge-amber{background:rgba(239,159,39,.15);color:var(--amber2)}
+.badge-red{background:rgba(226,75,74,.15);color:var(--red2)}
+.badge-blue{background:rgba(55,138,221,.15);color:var(--blue2)}
+.badge-gray{background:var(--bg4);color:var(--text3)}
+.check-group{margin-bottom:14px}
+.check-group-title{font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;padding:6px 0;border-bottom:1px solid var(--border);margin-bottom:6px;display:flex;justify-content:space-between}
+.check-item{display:flex;align-items:flex-start;gap:10px;padding:8px 10px;border-radius:var(--radius-sm);cursor:pointer;transition:background .1s;border:1px solid transparent;margin-bottom:3px}
+.check-item:hover{background:var(--bg3)}
+.check-item.done{opacity:.5}
+.check-item.devio{background:rgba(226,75,74,.06);border-color:rgba(226,75,74,.2)}
+.cb{width:17px;height:17px;border:1.5px solid var(--border2);border-radius:4px;flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;transition:all .15s;cursor:pointer}
+.cb.checked{background:var(--green);border-color:var(--green)}
+.cb.checked::after{content:'✓';color:#fff;font-size:10px;font-weight:700}
+.cb.blocked{background:rgba(226,75,74,.15);border-color:var(--red)}
+.cb.blocked::after{content:'✕';color:var(--red2);font-size:10px;font-weight:700}
+.check-info{flex:1}
+.check-name{font-size:12px;color:var(--text);font-weight:500}
+.check-detail{font-size:11px;color:var(--text3);margin-top:1px}
+.check-meta{display:flex;gap:6px;margin-top:4px;flex-wrap:wrap;align-items:center}
+.desvio-btn{font-size:10px;color:var(--red2);cursor:pointer;padding:1px 6px;border:1px solid rgba(226,75,74,.3);border-radius:4px;background:rgba(226,75,74,.08)}
+.desvio-btn:hover{background:rgba(226,75,74,.2)}
+.desvio-form{background:rgba(226,75,74,.06);border:1px solid rgba(226,75,74,.2);border-radius:var(--radius-sm);padding:10px;margin-top:6px;display:none}
+.desvio-form.open{display:block}
+select,textarea,input[type=text],input[type=number]{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius-sm);color:var(--text);padding:6px 8px;font-size:12px;font-family:inherit;margin-top:4px;resize:vertical}
+select:focus,textarea:focus,input:focus{outline:none;border-color:var(--green)}
+.form-row{margin-bottom:8px}
+.form-label{font-size:10px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.btn{padding:6px 14px;border-radius:var(--radius-sm);font-size:12px;font-weight:600;cursor:pointer;border:none;transition:all .15s}
+.btn-green{background:var(--green);color:#fff}
+.btn-green:hover{background:#17855e}
+.btn-gray{background:var(--bg4);color:var(--text2);border:1px solid var(--border2)}
+.btn-gray:hover{background:var(--bg3)}
+.btn-row{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+.chat-wrap{height:300px;overflow-y:auto;padding:8px 0;display:flex;flex-direction:column;gap:8px}
+.msg{max-width:88%;padding:9px 12px;border-radius:10px;font-size:12px;line-height:1.6;white-space:pre-wrap}
+.msg.user{background:var(--bg4);color:var(--text);align-self:flex-end;border-bottom-right-radius:3px}
+.msg.ai{background:var(--bg3);border:1px solid var(--border);color:var(--text);align-self:flex-start;border-bottom-left-radius:3px}
+.msg.loading{color:var(--text3)}
+.chat-input-row{display:flex;gap:8px;margin-top:10px}
+.chat-input-row input{flex:1;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius-sm);color:var(--text);padding:8px 12px;font-size:12px;font-family:inherit}
+.chat-input-row input:focus{outline:none;border-color:var(--green)}
+.chat-input-row button{background:var(--green);color:#fff;border:none;border-radius:var(--radius-sm);padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer}
+.chat-input-row button:hover{background:#17855e}
+.chat-input-row button:disabled{opacity:.5;cursor:not-allowed}
+.quick-qs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.qbtn{font-size:11px;padding:4px 10px;border-radius:20px;border:1px solid var(--border2);background:var(--bg3);color:var(--text2);cursor:pointer}
+.qbtn:hover{border-color:var(--green);color:var(--green2)}
+.hist-item{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:8px}
+.hist-date{font-size:10px;color:var(--text3);font-weight:600;margin-bottom:6px}
+.hist-empty{color:var(--text3);font-size:12px;text-align:center;padding:24px}
+.alerta{padding:8px 12px;border-radius:var(--radius-sm);font-size:12px;margin-bottom:8px;border-left:3px solid;display:flex;gap:8px;align-items:flex-start}
+.alerta.red{background:rgba(226,75,74,.08);border-color:var(--red);color:var(--red2)}
+.alerta.amber{background:rgba(239,159,39,.08);border-color:var(--amber);color:var(--amber2)}
+.alerta.green{background:rgba(29,158,117,.08);border-color:var(--green);color:var(--green2)}
+.alerta.blue{background:rgba(55,138,221,.08);border-color:var(--blue);color:var(--blue2)}
+.divider{height:1px;background:var(--border);margin:12px 0}
+.version-tag{font-size:10px;color:var(--text3);text-align:right;padding:4px 16px 8px}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:var(--bg2)}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+</style>
+</head>
+<body>
+
+<div class="nav">
+  <div class="nav-brand">CC 370 · Pirapora<span>Fórum TJMG — Gestão Alex</span></div>
+  <div class="nav-tabs">
+    <div class="tab active" onclick="showPage('dashboard',this)">Dashboard</div>
+    <div class="tab" onclick="showPage('checklist',this)">Checklist diário</div>
+    <div class="tab" onclick="showPage('desvios',this)">Desvios</div>
+    <div class="tab" onclick="showPage('ia',this)">Consultar IA</div>
+    <div class="tab" onclick="showPage('historico',this)">Histórico</div>
+  </div>
+  <div class="nav-date" id="nav-date"></div>
+</div>
+
+<!-- DASHBOARD -->
+<div class="page active" id="page-dashboard">
+  <div class="grid4" style="margin-bottom:12px">
+    <div class="metric">
+      <div class="metric-label">Início da obra</div>
+      <div class="metric-val" style="font-size:14px">15/Jun/2026</div>
+      <div class="metric-sub" id="dias-corridos">— dias corridos</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Avanço físico</div>
+      <div class="metric-val green" id="avanco-val">0,0%</div>
+      <div class="metric-sub">Meta: <span id="meta-hoje">2,0%</span></div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Itens concluídos hoje</div>
+      <div class="metric-val" id="itens-ok">0</div>
+      <div class="metric-sub" id="itens-total">de 35 no checklist</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Desvios acumulados</div>
+      <div class="metric-val red" id="desvios-total">0</div>
+      <div class="metric-sub">total registrado</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Progresso geral — Implantação M1 a M4</div>
+    <div class="prog-wrap">
+      <div class="prog-label"><span>Checklist geral</span><span id="prog-pct">0%</span></div>
+      <div class="prog-track"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+    </div>
+    <div class="grid4" style="margin-top:10px">
+      <div style="font-size:11px;color:var(--text3)">M1 Jun–Jul<br><span id="m1-val" style="color:var(--text);font-weight:600">0,0%</span><span style="font-size:10px;color:var(--text3)"> / meta 2,0%</span></div>
+      <div style="font-size:11px;color:var(--text3)">M2 Jul–Ago<br><span style="color:var(--text);font-weight:600">—</span><span style="font-size:10px;color:var(--text3)"> / meta 4,1%</span></div>
+      <div style="font-size:11px;color:var(--text3)">M3 Ago–Set<br><span style="color:var(--text);font-weight:600">—</span><span style="font-size:10px;color:var(--text3)"> / meta 8,0%</span></div>
+      <div style="font-size:11px;color:var(--text3)">M4 Set–Out<br><span style="color:var(--text);font-weight:600">—</span><span style="font-size:10px;color:var(--text3)"> / meta 10,5%</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Alertas ativos</div>
+    <div class="alerta red"><span>⚠</span><span><strong>Estacaria:</strong> contratar até 30/Jun/2026. Risco de atraso no mês 3 (pico das fundações).</span></div>
+    <div class="alerta red"><span>⚠</span><span><strong>PCMAT e PCMSO:</strong> documentos obrigatórios não registrados ainda. Acionar TST hoje.</span></div>
+    <div class="alerta red"><span>⚠</span><span><strong>Alvará de tapume e construção:</strong> confirmar emissão pela Prefeitura de Pirapora.</span></div>
+    <div class="alerta amber"><span>⚡</span><span><strong>Licença supressão arbórea:</strong> prazo 15–30 dias. Protocolar imediatamente.</span></div>
+    <div class="alerta amber"><span>⚡</span><span><strong>CNO — Cadastro Nacional de Obras:</strong> registrar na Receita Federal antes da 1ª admissão.</span></div>
+    <div class="alerta blue"><span>ℹ</span><span><strong>SGI:</strong> lançar avanço físico todo sábado. Meta acumulada ao final de M1 (14/Jul): 2,0%.</span></div>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title">CD Ótimo — teto 4 meses</div>
+      <div style="font-size:22px;font-weight:700;color:var(--green);margin-bottom:4px">R$ 1.348.240</div>
+      <div style="font-size:11px;color:var(--text3);margin-bottom:10px">PV a receber: R$ 2.514.480</div>
+      <div class="prog-wrap">
+        <div class="prog-label"><span>Custo acumulado</span><span id="custo-pct">0%</span></div>
+        <div class="prog-track"><div class="prog-fill amber" id="custo-fill" style="width:0%"></div></div>
+      </div>
+      <div style="font-size:11px;color:var(--text3);margin-top:6px">Custo registrado: <strong id="custo-val" style="color:var(--text)">R$ 0</strong></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Últimos desvios</div>
+      <div id="ultimos-desvios"><div class="hist-empty" style="padding:12px">Nenhum desvio registrado.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- CHECKLIST -->
+<div class="page" id="page-checklist">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px">
+    <div>
+      <div style="font-size:15px;font-weight:700">Checklist diário</div>
+      <div style="font-size:11px;color:var(--text3)">Marque o que foi concluído. Registre desvios do que não foi feito.</div>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+      <span class="badge badge-green" id="badge-ok">0 ok</span>
+      <span class="badge badge-red" id="badge-dev">0 desvios</span>
+      <button class="btn btn-green" onclick="salvarDia()">💾 Salvar dia</button>
+    </div>
+  </div>
+  <div id="checklist-container"></div>
+</div>
+
+<!-- DESVIOS -->
+<div class="page" id="page-desvios">
+  <div style="font-size:15px;font-weight:700;margin-bottom:4px">Registro de desvios</div>
+  <div style="font-size:11px;color:var(--text3);margin-bottom:14px">O que estava previsto e não foi realizado.</div>
+  <div class="card">
+    <div class="card-title">Novo desvio</div>
+    <div class="form-row"><div class="form-label">Atividade prevista não realizada</div><input type="text" id="dev-ativ" placeholder="Ex: Instalação do tapume perimetral"></div>
+    <div class="grid2">
+      <div class="form-row">
+        <div class="form-label">Classificação</div>
+        <select id="dev-tipo">
+          <option value="">Selecionar...</option>
+          <option>Desvio Planejamento — erro de cálculo ou mudança de escopo</option>
+          <option>Desvio Suprimentos — compra errada ou atraso de entrega</option>
+          <option>Desvio Execução — quebra, desperdício, retrabalho</option>
+          <option>Desvio Externo — chuva, licença pendente, concessionária</option>
+          <option>Desvio RH — falta de mão de obra ou absenteísmo</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <div class="form-label">Responsável pela correção</div>
+        <select id="dev-resp">
+          <option value="">Selecionar...</option>
+          <option>Alexandre (Eng. Civil)</option>
+          <option>Darana (Elétrica)</option>
+          <option>Samuel (Hidro)</option>
+          <option>Leonardo Cruz (Suprimentos)</option>
+          <option>Augusto / Dante (Planejamento)</option>
+          <option>Saniele / Poliana (Contratos)</option>
+          <option>RH / Edinardo</option>
+          <option>TST</option>
+          <option>Gestor (Alex)</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row"><div class="form-label">Descrição e impacto</div><textarea id="dev-desc" rows="2" placeholder="O que ocorreu e impacto no cronograma ou custo..."></textarea></div>
+    <div class="form-row"><div class="form-label">Ação corretiva</div><textarea id="dev-acao" rows="2" placeholder="O que será feito e até quando..."></textarea></div>
+    <div class="btn-row">
+      <button class="btn btn-green" onclick="salvarDesvio()">Registrar desvio</button>
+      <button class="btn btn-gray" onclick="limparDesvio()">Limpar</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">Desvios registrados</div>
+    <div id="lista-desvios"><div class="hist-empty">Nenhum desvio ainda.</div></div>
+  </div>
+</div>
+
+<!-- IA -->
+<div class="page" id="page-ia">
+  <div style="font-size:15px;font-weight:700;margin-bottom:4px">Consultar IA — CC 370</div>
+  <div style="font-size:11px;color:var(--text3);margin-bottom:14px">Tire dúvidas sobre contrato, PGE, sequência executiva e critérios TJMG.</div>
+  <div class="card" style="padding:12px">
+    <div class="card-title">Perguntas rápidas</div>
+    <div class="quick-qs">
+      <div class="qbtn" onclick="askQ('Qual o teto de custo direto do mês de agosto para ficar na meta de excelência?')">Teto CD agosto</div>
+      <div class="qbtn" onclick="askQ('Quais serviços posso iniciar agora em junho e o que está bloqueado?')">O que iniciar agora</div>
+      <div class="qbtn" onclick="askQ('Como calcular a medição do mês 1 aplicando o Fator K e o BDI correto?')">Como calcular medição M1</div>
+      <div class="qbtn" onclick="askQ('Quais documentos estão faltando para iniciar a obra?')">Docs faltando</div>
+      <div class="qbtn" onclick="askQ('Qual a sequência correta para fundação profunda e o que o TJMG exige antes da superestrutura?')">Sequência fundação</div>
+      <div class="qbtn" onclick="askQ('O que é CIA e quando devo abrir uma no SGI?')">O que é CIA</div>
+      <div class="qbtn" onclick="askQ('Quais são os critérios de levantamento do TJMG para medição de estacas hélice?')">Medição estacas</div>
+      <div class="qbtn" onclick="askQ('Qual o CD Ótimo total dos 4 primeiros meses e como está distribuído?')">CD Ótimo 4 meses</div>
+    </div>
+  </div>
+  <div class="card" style="padding:12px">
+    <div class="chat-wrap" id="chat-wrap">
+      <div class="msg ai">Olá, Alex! Sou seu assistente da obra CC 370 — Fórum de Pirapora. Conheço o contrato TJMG, o PGE, a Sequência Executiva e os critérios de medição. Pergunte sobre custos, sequência, documentos ou qualquer dúvida da obra.</div>
+    </div>
+    <div class="chat-input-row">
+      <input type="text" id="chat-input" placeholder="Digite sua pergunta..." onkeydown="if(event.key==='Enter')sendMsg()">
+      <button id="chat-btn" onclick="sendMsg()">Enviar</button>
+    </div>
+  </div>
+</div>
+
+<!-- HISTÓRICO -->
+<div class="page" id="page-historico">
+  <div style="font-size:15px;font-weight:700;margin-bottom:4px">Histórico de registros</div>
+  <div style="font-size:11px;color:var(--text3);margin-bottom:14px">Todos os dias salvos com checklist e desvios.</div>
+  <div id="historico-container"><div class="hist-empty">Nenhum dia salvo ainda.</div></div>
+</div>
+
+<div class="version-tag" id="version-tag">v1.0 · 15/Jun/2026</div>
+
+<script>
+const STORAGE_KEY='cc370_v1';
+const CHECKLIST_ITEMS=[
+  {id:'c01',grupo:'Canteiro e mobilização',nome:'Tapume perimetral instalado',detalhe:'Fechamento do terreno conforme PDR-Tapume',fase:'M1'},
+  {id:'c02',grupo:'Canteiro e mobilização',nome:'Placa de obras instalada',detalhe:'Padrão TJMG — 7,75 m²',fase:'M1'},
+  {id:'c03',grupo:'Canteiro e mobilização',nome:'Barracão de obras montado',detalhe:'Estrutura provisória com escritório e almoxarifado',fase:'M1'},
+  {id:'c04',grupo:'Canteiro e mobilização',nome:'Ligação provisória de água solicitada (COPASA)',detalhe:'Cavalete provisório no passeio',fase:'M1'},
+  {id:'c05',grupo:'Canteiro e mobilização',nome:'Ligação provisória de energia solicitada (CEMIG)',detalhe:'Padrão de energia provisório com medidor',fase:'M1'},
+  {id:'c06',grupo:'Canteiro e mobilização',nome:'Equipe gestora mobilizada e admitida no SGI',detalhe:'Alexandre, Mestre, Encarregado, TST, Vigia, Almoxarife',fase:'M1'},
+  {id:'c07',grupo:'Canteiro e mobilização',nome:'EPI inicial adquirido e distribuído',detalhe:'Capacetes, botas, luvas, óculos, colete',fase:'M1'},
+  {id:'c08',grupo:'Canteiro e mobilização',nome:'Grupos Telegram criados (obra + ESP)',detalhe:'Gestão, Suprimentos, SGI e Produção',fase:'M1'},
+  {id:'c09',grupo:'Documentos e licenças',nome:'Ordem de Serviço recebida do TJMG',detalhe:'Documento oficial de início de obra',fase:'M1'},
+  {id:'c10',grupo:'Documentos e licenças',nome:'CNO registrado na Receita Federal',detalhe:'Cadastro Nacional de Obras — matrícula INSS',fase:'M1'},
+  {id:'c11',grupo:'Documentos e licenças',nome:'Comunicação prévia ao Ministério do Trabalho',detalhe:'NR-18 — antes do primeiro trabalhador',fase:'M1'},
+  {id:'c12',grupo:'Documentos e licenças',nome:'PCMAT elaborado e assinado pelo TST',detalhe:'Programa de Condições e Meio Ambiente de Trabalho',fase:'M1'},
+  {id:'c13',grupo:'Documentos e licenças',nome:'PCMSO elaborado e assinado',detalhe:'Médico do trabalho — NR-7',fase:'M1'},
+  {id:'c14',grupo:'Documentos e licenças',nome:'Alvará de construção obtido',detalhe:'Prefeitura de Pirapora — fixar na obra',fase:'M1'},
+  {id:'c15',grupo:'Documentos e licenças',nome:'Alvará de tapume obtido',detalhe:'Autorização municipal para fechamento da calçada',fase:'M1'},
+  {id:'c16',grupo:'Documentos e licenças',nome:'ARTs dos responsáveis técnicos no CREA',detalhe:'Civil, Elétrico, Mecânico, TST',fase:'M1'},
+  {id:'c17',grupo:'Documentos e licenças',nome:'Seguro Garantia de Execução vigente',detalhe:'Apólice conforme Edital 010/2026',fase:'M1'},
+  {id:'c18',grupo:'Terraplanagem e SPDA',nome:'Licença de supressão arbórea protocolada',detalhe:'Pode levar 15–30 dias para emitir',fase:'M1'},
+  {id:'c19',grupo:'Terraplanagem e SPDA',nome:'Empresa de terraplanagem contratada',detalhe:'Mínimo 3 cotações — Leonardo Cruz (Suprimentos)',fase:'M1'},
+  {id:'c20',grupo:'Terraplanagem e SPDA',nome:'Levantamento planialtimétrico executado',detalhe:'Base para locação e gabarito P5 (174,50m)',fase:'M1'},
+  {id:'c21',grupo:'Terraplanagem e SPDA',nome:'Autorização de bota fora obtida',detalhe:'Área licenciada para descarte de solo',fase:'M2'},
+  {id:'c22',grupo:'Terraplanagem e SPDA',nome:'Limpeza mecanizada do terreno concluída',detalhe:'11.180 m² — supressão + destocamento + corte',fase:'M2'},
+  {id:'c23',grupo:'Fundação profunda',nome:'Estacaria contratada (hélice contínua)',detalhe:'PRAZO LIMITE: 30/Jun — risco de atraso M3',fase:'M1'},
+  {id:'c24',grupo:'Fundação profunda',nome:'SPDA fase solo executada (malha + hastes)',detalhe:'Antes da concretagem — janela única',fase:'M2'},
+  {id:'c25',grupo:'Fundação profunda',nome:'Locação da fundação profunda (gabarito)',detalhe:'Topografia para marcação das estacas',fase:'M2'},
+  {id:'c26',grupo:'Fundação profunda',nome:'Execução das estacas hélice iniciada',detalhe:'Medição em metros de profundidade escavada',fase:'M2'},
+  {id:'c27',grupo:'Fundação profunda',nome:'Execução das estacas hélice concluída',detalhe:'100% das estacas executadas e aceitas',fase:'M3'},
+  {id:'c28',grupo:'Fundação profunda',nome:'Prova de Carga Estática (PCE) executada',detalhe:'Laudo obrigatório — condição para superestrutura',fase:'M3'},
+  {id:'c29',grupo:'Fundação profunda',nome:'Prova de Carga Dinâmica (PDA) executada',detalhe:'Laudo obrigatório — condição para superestrutura',fase:'M3'},
+  {id:'c30',grupo:'Fundação rasa e reservatórios',nome:'Escavação de valas concluída (454 m³)',detalhe:'Mecanizada — licença de abertura de vala necessária',fase:'M3'},
+  {id:'c31',grupo:'Fundação rasa e reservatórios',nome:'Instalações em solo interno executadas',detalhe:'Tubulações hidro e esgoto antes do baldrame',fase:'M4'},
+  {id:'c32',grupo:'Fundação rasa e reservatórios',nome:'Blocos de coroamento e baldrame executados',detalhe:'Após laudos PCE/PDA aprovados',fase:'M4'},
+  {id:'c33',grupo:'Fundação rasa e reservatórios',nome:'Reservatório de água potável executado',detalhe:'Com tampões em ferro fundido (3 un)',fase:'M4'},
+  {id:'c34',grupo:'Controle tecnológico',nome:'Corpo de prova de concreto coletado e enviado',detalhe:'Controle tecnológico — relatório obrigatório TJMG',fase:'M3'},
+  {id:'c35',grupo:'Controle tecnológico',nome:'Controle de compactação do solo executado',detalhe:'Relatório exigido antes da fundação rasa',fase:'M3'},
+];
+
+const SYSTEM_PROMPT=`Você é o assistente de gestão da obra CC 370 — Fórum TJMG em Pirapora/MG, gerenciada por Alex da Alcance Engenharia.
+OBRA: VGV R$23.991.542,95 | Desconto 9,15% | Fator K 0,9085 | Prazo 18 meses | Início 15/Jun/2026 | Término 15/Dez/2027
+META EXCELÊNCIA (20% lucro): CD Ótimo total R$12.864.036,84
+CD ÓTIMO IMPLANTAÇÃO (4 meses): R$1.348.240
+BDI: 22,17% geral | 15,28% VRF/elevador/quadros
+METAS AVANÇO: M1(14/Jul)=2,0% | M2(14/Ago)=4,1% | M3(14/Set)=8,0% | M4(14/Out)=10,5%
+CD ÓTIMO MENSAL PESSOAL: R$55.137/mês — cada mês de atraso queima R$63K (pessoal+equip)
+SEQUÊNCIA OBRIGATÓRIA: 1-Implantação 2-Estruturação 3-Recheio 4-Cobertura 5-Fachada 6-ÁreaExterna 7-Limpeza
+BLOQUEIOS: Superestrutura bloqueada até laudos PCE/PDA | Fechamentos bloqueados até laje liberada | Instalações solo antes do baldrame (janela única)
+EQUIPE: Alexandre(Estrutura) Larissa(ARQ) Samuel(Hidro) Darana(Elétrica) Leonardo(Suprimentos) Augusto/Dante(Planejamento) Saniele/Poliana(Contratos)
+CRITÉRIOS TJMG: Fator K 0,9085 obrigatório | Estacas em metros escavados | Estrutura levantamento elemento a elemento | Instalações por verba % com laudo
+Responda de forma direta e prática. Sempre em português.`;
+
+let state={checklist:{},desvios:[],historico:[],avanco:0,custo:0,chat:[]};
+
+function loadState(){
+  try{const s=localStorage.getItem(STORAGE_KEY);if(s)state=JSON.parse(s);}catch(e){}
+  renderAll();
+}
+function saveLS(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(state));}catch(e){}}
+
+function renderAll(){renderChecklist();renderDesvios();renderHistorico();updateDashboard();}
+
+function showPage(id,tab){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  if(tab)tab.classList.add('active');
+}
+
+function renderChecklist(){
+  const grupos={};
+  CHECKLIST_ITEMS.forEach(i=>{if(!grupos[i.grupo])grupos[i.grupo]=[];grupos[i.grupo].push(i);});
+  const today=todayKey();
+  const tc=state.checklist[today]||{};
+  let html='';
+  Object.entries(grupos).forEach(([g,items])=>{
+    const done=items.filter(i=>tc[i.id]==='done').length;
+    const dev=items.filter(i=>tc[i.id]==='desvio').length;
+    html+=`<div class="check-group"><div class="check-group-title">${g}<span style="font-weight:400">${done}/${items.length}${dev?' · '+dev+' desvio(s)':''}</span></div>`;
+    items.forEach(item=>{
+      const st=tc[item.id]||'pending';
+      const isDone=st==='done',isDev=st==='desvio';
+      const fc=item.fase==='M1'?'badge-green':item.fase==='M2'?'badge-amber':'badge-gray';
+      html+=`<div class="check-item${isDone?' done':''}${isDev?' devio':''}" id="ci-${item.id}">
+        <div class="cb${isDone?' checked':''}${isDev?' blocked':''}" onclick="toggleCheck('${item.id}',event)"></div>
+        <div class="check-info">
+          <div class="check-name">${item.nome}</div>
+          <div class="check-detail">${item.detalhe}</div>
+          <div class="check-meta">
+            <span class="badge ${fc}">${item.fase}</span>
+            ${isDev?'<span class="badge badge-red">desvio</span>':''}
+            <span class="desvio-btn" onclick="abrirDF('${item.id}','${item.nome}',event)">+ registrar desvio</span>
+          </div>
+          <div class="desvio-form" id="df-${item.id}">
+            <div class="form-row"><div class="form-label">Tipo</div>
+              <select id="dt-${item.id}"><option>Desvio Planejamento</option><option>Desvio Suprimentos</option><option>Desvio Execução</option><option>Desvio Externo</option><option>Desvio RH</option></select></div>
+            <div class="form-row"><div class="form-label">O que impediu + ação corretiva</div>
+              <textarea id="dd-${item.id}" rows="2" placeholder="Descreva o impedimento e a ação prevista..."></textarea></div>
+            <div class="btn-row">
+              <button class="btn btn-green" style="font-size:11px;padding:4px 10px" onclick="salvarDI('${item.id}','${item.nome}',event)">Salvar</button>
+              <button class="btn btn-gray" style="font-size:11px;padding:4px 10px" onclick="fecharDF('${item.id}',event)">Cancelar</button>
+            </div>
+          </div>
+        </div>
+      </div>`;
+    });
+    html+='</div>';
+  });
+  document.getElementById('checklist-container').innerHTML=html;
+  updateBadges();
+}
+
+function toggleCheck(id,e){
+  e.stopPropagation();
+  const today=todayKey();
+  if(!state.checklist[today])state.checklist[today]={};
+  const cur=state.checklist[today][id]||'pending';
+  state.checklist[today][id]=cur==='done'?'pending':'done';
+  renderChecklist();updateDashboard();saveLS();
+}
+function abrirDF(id,nome,e){e.stopPropagation();document.querySelectorAll('.desvio-form').forEach(f=>f.classList.remove('open'));document.getElementById('df-'+id).classList.add('open');}
+function fecharDF(id,e){e.stopPropagation();document.getElementById('df-'+id).classList.remove('open');}
+function salvarDI(id,nome,e){
+  e.stopPropagation();
+  const tipo=document.getElementById('dt-'+id).value;
+  const desc=document.getElementById('dd-'+id).value;
+  const today=todayKey();
+  if(!state.checklist[today])state.checklist[today]={};
+  state.checklist[today][id]='desvio';
+  state.desvios.push({id:Date.now(),data:today,atividade:nome,tipo,desc,acao:'',resp:'Gestor'});
+  fecharDF(id,e);renderChecklist();renderDesvios();updateDashboard();saveLS();
+}
+function updateBadges(){
+  const today=todayKey();const c=state.checklist[today]||{};
+  document.getElementById('badge-ok').textContent=Object.values(c).filter(v=>v==='done').length+' ok';
+  document.getElementById('badge-dev').textContent=Object.values(c).filter(v=>v==='desvio').length+' desvios';
+}
+function salvarDia(){
+  const today=todayKey();const c=state.checklist[today]||{};
+  const ok=Object.values(c).filter(v=>v==='done').length;
+  const dev=Object.values(c).filter(v=>v==='desvio').length;
+  const entry={data:today,ok,dev,total:CHECKLIST_ITEMS.length,desvios:state.desvios.filter(d=>d.data===today)};
+  const idx=state.historico.findIndex(h=>h.data===today);
+  if(idx>-1)state.historico[idx]=entry;else state.historico.unshift(entry);
+  state.avanco=parseFloat((ok/CHECKLIST_ITEMS.length*10.5).toFixed(1));
+  saveLS();renderHistorico();updateDashboard();
+  alert('✅ Dia salvo! Avanço físico: '+state.avanco+'%');
+}
+function renderDesvios(){
+  const el=document.getElementById('lista-desvios');
+  const eu=document.getElementById('ultimos-desvios');
+  if(!state.desvios.length){
+    el.innerHTML='<div class="hist-empty">Nenhum desvio ainda.</div>';
+    eu.innerHTML='<div class="hist-empty" style="padding:12px">Nenhum desvio registrado.</div>';
+    return;
+  }
+  const s=[...state.desvios].reverse();
+  const tc=t=>t.includes('Execução')?'badge-red':t.includes('Suprimentos')?'badge-amber':t.includes('Planejamento')?'badge-blue':'badge-gray';
+  el.innerHTML=s.map(d=>`<div class="hist-item"><div class="hist-date">${fmtDate(d.data)} — <span class="badge ${tc(d.tipo)}">${d.tipo.split('—')[0].trim()}</span></div><div style="font-size:12px;font-weight:500;margin-bottom:3px">${d.atividade}</div>${d.desc?`<div style="font-size:11px;color:var(--text3)">${d.desc}</div>`:''}</div>`).join('');
+  eu.innerHTML=s.slice(0,3).map(d=>`<div style="padding:5px 0;border-bottom:1px solid var(--border);font-size:11px"><span class="badge ${tc(d.tipo)}" style="margin-right:4px">${d.tipo.split('—')[0].trim()}</span><span>${d.atividade}</span></div>`).join('');
+}
+function salvarDesvio(){
+  const a=document.getElementById('dev-ativ').value.trim();
+  const t=document.getElementById('dev-tipo').value;
+  if(!a||!t){alert('Preencha a atividade e o tipo.');return;}
+  state.desvios.push({id:Date.now(),data:todayKey(),atividade:a,tipo:t,resp:document.getElementById('dev-resp').value,desc:document.getElementById('dev-desc').value,acao:document.getElementById('dev-acao').value});
+  limparDesvio();renderDesvios();updateDashboard();saveLS();
+}
+function limparDesvio(){['dev-ativ','dev-tipo','dev-resp','dev-desc','dev-acao'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});}
+function renderHistorico(){
+  const el=document.getElementById('historico-container');
+  if(!state.historico.length){el.innerHTML='<div class="hist-empty">Nenhum dia salvo ainda.</div>';return;}
+  el.innerHTML=state.historico.map(h=>`<div class="hist-item"><div class="hist-date">${fmtDate(h.data)}</div><div style="font-size:11px;color:#9FE1CB">✓ ${h.ok} atividades concluídas de ${h.total}</div>${h.dev?`<div style="font-size:11px;color:var(--red2)">✕ ${h.dev} desvios</div>`:''}</div>`).join('');
+}
+function updateDashboard(){
+  const inicio=new Date('2026-06-15');const now=new Date();
+  const dias=Math.max(0,Math.floor((now-inicio)/(864e5)));
+  document.getElementById('dias-corridos').textContent=dias+' dias corridos';
+  document.getElementById('avanco-val').textContent=(state.avanco||0).toFixed(1)+'%';
+  const today=todayKey();const c=state.checklist[today]||{};
+  const ok=Object.values(c).filter(v=>v==='done').length;
+  document.getElementById('itens-ok').textContent=ok;
+  document.getElementById('desvios-total').textContent=state.desvios.length;
+  const pct=Math.round(ok/CHECKLIST_ITEMS.length*100);
+  document.getElementById('prog-pct').textContent=pct+'%';
+  document.getElementById('prog-fill').style.width=pct+'%';
+  document.getElementById('m1-val').textContent=(state.avanco||0).toFixed(1)+'%';
+  const cpct=Math.round((state.custo||0)/1348240*100);
+  document.getElementById('custo-pct').textContent=cpct+'%';
+  document.getElementById('custo-fill').style.width=Math.min(cpct,100)+'%';
+  document.getElementById('custo-val').textContent='R$ '+(state.custo||0).toLocaleString('pt-BR');
+  renderDesvios();
+}
+function todayKey(){return new Date().toISOString().split('T')[0];}
+function fmtDate(k){if(!k)return'—';const[y,m,d]=k.split('-');const ms=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];return`${d}/${ms[parseInt(m)-1]}/${y}`;}
+
+async function sendMsg(){
+  const inp=document.getElementById('chat-input');const msg=inp.value.trim();if(!msg)return;
+  inp.value='';addMsg(msg,'user');
+  const lid=addMsg('Consultando...','ai loading');
+  document.getElementById('chat-btn').disabled=true;
+  state.chat.push({role:'user',content:msg});
+  try{
+    const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,system:SYSTEM_PROMPT,messages:state.chat.slice(-10)})});
+    const data=await r.json();
+    const text=data.content?.filter(c=>c.type==='text').map(c=>c.text).join('\n')||'Erro na resposta.';
+    updateMsg(lid,text);state.chat.push({role:'assistant',content:text});
+    if(state.chat.length>20)state.chat=state.chat.slice(-20);
+    saveLS();
+  }catch(e){updateMsg(lid,'Erro de conexão. Tente novamente.');}
+  document.getElementById('chat-btn').disabled=false;
+}
+function addMsg(t,cls){const w=document.getElementById('chat-wrap');const id='m'+Date.now();const d=document.createElement('div');d.className='msg '+cls;d.id=id;d.textContent=t;w.appendChild(d);w.scrollTop=w.scrollHeight;return id;}
+function updateMsg(id,t){const e=document.getElementById(id);if(e){e.textContent=t;e.className='msg ai';}document.getElementById('chat-wrap').scrollTop=9999;}
+function askQ(q){showPage('ia',document.querySelectorAll('.tab')[3]);document.getElementById('chat-input').value=q;sendMsg();}
+
+document.getElementById('nav-date').textContent=new Date().toLocaleDateString('pt-BR',{weekday:'short',day:'2-digit',month:'short'});
+document.getElementById('version-tag').textContent='v1.0 · Deploy: '+new Date().toLocaleDateString('pt-BR');
+loadState();
+</script>
+</body>
+</html>
