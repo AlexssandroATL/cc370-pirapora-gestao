@@ -575,7 +575,9 @@ function renderCron(){
     gi.forEach(a=>{
       const ini=dt(a.inicio);const iniOff=Math.max(0,(ini-INICIO)/86400000);
       const off=(iniOff/totalDias*100).toFixed(1);
-      const w16=(a.dur16/totalDias*100).toFixed(1);const w18=(a.dur18/totalDias*100).toFixed(1);
+      const dur16=Math.max(1,Math.round((dt(a.fim16)-dt(a.inicio))/86400000));
+      const dur18=Math.max(1,Math.round((dt(a.fim18)-dt(a.inicio))/86400000));
+      const w16=(dur16/totalDias*100).toFixed(1);const w18=(dur18/totalDias*100).toFixed(1);
       const isAtiva=n>=ini&&n<=dt(t===18?a.fim18:a.fim16);
       const lbl=a.nome.length>28?a.nome.substring(0,26)+'…':a.nome;
       if(t===0){
