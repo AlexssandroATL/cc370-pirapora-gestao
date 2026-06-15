@@ -334,7 +334,7 @@ select:focus,textarea:focus,input:focus{outline:none;border-color:var(--green)}
   <div style="font-size:15px;font-weight:700;margin-bottom:4px">Histórico</div>
   <div id="hist-list"><div class="empty">Nenhum dia salvo ainda.</div></div>
 </div>
-<div class="ver">v3.0 — CC 370 Pirapora · 70 atividades + subtarefas · 56 itens PGE · Trilhas 16m/18m</div>
+<div class="ver">v3.2 — CC 370 Pirapora · 70 atividades + subtarefas · 2.168 itens PGE · Trilhas 16m/18m</div>
 
 <script>
 const SK='cc370v3';
@@ -618,7 +618,7 @@ function renderCron(){
 
 // ===== PGE / NEGOCIAÇÃO =====
 function renderPGE(){
-  const base=typeof PGE_BASE!=='undefined'?PGE_BASE:[];
+  const base=typeof PGE_BASE!=='undefined'?normalizePGE(PGE_BASE):[];
   const q=(document.getElementById('pge-q')?.value||'').toLowerCase();
   const grpF=document.getElementById('pge-grp')?.value||'';
   const stF=document.getElementById('pge-st')?.value||'';
