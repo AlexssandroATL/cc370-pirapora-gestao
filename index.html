@@ -248,12 +248,21 @@ select:focus,textarea:focus,input:focus{outline:none;border-color:var(--green)}
 
 <!-- PGE / NEGOCIAÇÃO -->
 <div class="pg" id="pg-pge">
-  <div class="g3" style="margin-bottom:12px">
-    <div class="met"><div class="ml">Total PV — TJMG paga</div><div class="mv" style="font-size:14px" id="pge-pv">R$ 0</div><div class="ms">56 itens do PGE</div></div>
-    <div class="met"><div class="ml">CD Ótimo total (meta 20%)</div><div class="mv g" style="font-size:14px" id="pge-oti">R$ 0</div><div class="ms">46,4% de margem sobre PV</div></div>
-    <div class="met"><div class="ml">Economia negociada</div><div class="mv p" style="font-size:14px" id="pge-econ">R$ 0</div><div class="ms" id="pge-econ-sub">0 itens fechados</div></div>
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px">
+    <div class="met"><div class="ml">Total PV — TJMG paga</div><div class="mv" style="font-size:13px" id="pge-pv">R$ 0</div><div class="ms">2.168 itens PGE</div></div>
+    <div class="met" style="border-top:2px solid #E24B4A"><div class="ml">CD Empate</div><div class="mv" style="font-size:13px;color:#F09595" id="pge-emp">R$ 0</div><div class="ms" style="color:#F09595">76,3% do PV</div></div>
+    <div class="met" style="border-top:2px solid #EF9F27"><div class="ml">CD Limite</div><div class="mv" style="font-size:13px;color:var(--amber2)" id="pge-lim">R$ 0</div><div class="ms" style="color:var(--amber2)">69,3% do PV</div></div>
+    <div class="met" style="border-top:2px solid var(--green)"><div class="ml">CD Ótimo (meta 20%)</div><div class="mv g" style="font-size:13px" id="pge-oti">R$ 0</div><div class="ms" style="color:var(--green2)">53,6% do PV</div></div>
   </div>
-  <div class="pr" style="margin-bottom:14px"><div class="pl"><span>Progresso das negociações</span><span id="pge-neg-pct">0%</span></div><div class="pt"><div class="pf p" id="pge-neg-fill" style="width:0%"></div></div></div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
+    <div class="met"><div class="ml">Economia negociada total</div><div class="mv p" style="font-size:14px" id="pge-econ">R$ 0</div><div class="ms" id="pge-econ-sub">0 itens fechados</div></div>
+    <div class="met"><div class="ml">Itens na faixa ótima</div><div class="mv g" style="font-size:14px" id="pge-faixa-oti">0</div><div class="ms" id="pge-faixa-sub">0 no limite · 0 no empate</div></div>
+  </div>
+  <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+    <div style="flex:1"><div class="pl"><span style="font-size:11px;color:var(--text3)">Progresso das negociações</span><span id="pge-neg-pct" style="font-size:11px;color:var(--text3)">0%</span></div><div class="pt"><div class="pf p" id="pge-neg-fill" style="width:0%"></div></div></div>
+    <button class="btn" style="background:rgba(55,138,221,.15);color:var(--blue2);border:1px solid rgba(55,138,221,.3);font-size:11px;padding:5px 12px;white-space:nowrap" onclick="exportarExcel()">📊 Exportar Excel</button>
+    <button class="btn" style="background:rgba(226,75,74,.12);color:#F09595;border:1px solid rgba(226,75,74,.3);font-size:11px;padding:5px 12px;white-space:nowrap" onclick="exportarPDF()">📄 Exportar PDF</button>
+  </div>
   <div class="pge-filters">
     <input class="pge-search" type="text" id="pge-q" placeholder="🔍 Buscar código ou descrição..." oninput="renderPGE()">
     <select id="pge-grp" onchange="renderPGE()" style="max-width:180px">
@@ -334,7 +343,7 @@ select:focus,textarea:focus,input:focus{outline:none;border-color:var(--green)}
   <div style="font-size:15px;font-weight:700;margin-bottom:4px">Histórico</div>
   <div id="hist-list"><div class="empty">Nenhum dia salvo ainda.</div></div>
 </div>
-<div class="ver">v3.2 — CC 370 Pirapora · 70 atividades + subtarefas · 2.168 itens PGE · Trilhas 16m/18m</div>
+<div class="ver">v3.0 — CC 370 Pirapora · 70 atividades + subtarefas · 56 itens PGE · Trilhas 16m/18m</div>
 
 <script>
 const SK='cc370v3';
@@ -372,6 +381,7 @@ function normalizePGE(raw) {
     eh_item: r.t==='i',
     pv_unit: r.pu||0,
     pv_total: r.pv,
+    emp_total: r.et||0,
     lim_total: r.lt||0,
     oti_unit: r.ou||0,
     oti_total: r.ot,
@@ -618,7 +628,7 @@ function renderCron(){
 
 // ===== PGE / NEGOCIAÇÃO =====
 function renderPGE(){
-  const base=typeof PGE_BASE!=='undefined'?normalizePGE(PGE_BASE):[];
+  const base=typeof PGE_BASE!=='undefined'?PGE_BASE:[];
   const q=(document.getElementById('pge-q')?.value||'').toLowerCase();
   const grpF=document.getElementById('pge-grp')?.value||'';
   const stF=document.getElementById('pge-st')?.value||'';
@@ -630,19 +640,33 @@ function renderPGE(){
     grps.forEach(g=>{const o=document.createElement('option');o.value=g;o.textContent=g;grpSel.appendChild(o);});
   }
 
-  // Stats
-  let totPV=0,totOti=0,totEcon=0,nFechados=0,nNeg=0;
+  // Stats completos com 4 CDs e faixas
+  let totPV=0,totEmp=0,totLim=0,totOti=0,totEcon=0,nFechados=0,nNeg=0;
+  let nFaixaOti=0,nFaixaLim=0,nFaixaEmp=0;
   base.forEach(i=>{
-    if(!i.eh_item)return;  // stats apenas para itens folha
-    totPV+=i.pv_total;totOti+=i.oti_total;
+    if(!i.eh_item)return;
+    totPV+=i.pv_total; totEmp+=i.emp_total; totLim+=i.lim_total; totOti+=i.oti_total;
     const pge=S.pge[i.id]||{};
-    if(pge.status==='fechado'){nFechados++;const vn=pge.valor_negociado;totEcon+=(vn!=null?i.pv_total-vn:i.pv_total-i.oti_total);}
+    const vn=pge.valor_negociado;
+    if(pge.status==='fechado'){
+      nFechados++;
+      totEcon+=(vn!=null?i.pv_total-vn:i.pv_total-i.oti_total);
+      if(vn!=null){
+        if(vn<=i.oti_total) nFaixaOti++;
+        else if(vn<=i.lim_total) nFaixaLim++;
+        else if(vn<=i.emp_total) nFaixaEmp++;
+      }
+    }
     if(pge.status==='em_negociacao')nNeg++;
   });
   document.getElementById('pge-pv').textContent=fmtR(totPV);
+  document.getElementById('pge-emp').textContent=fmtR(totEmp);
+  document.getElementById('pge-lim').textContent=fmtR(totLim);
   document.getElementById('pge-oti').textContent=fmtR(totOti);
   document.getElementById('pge-econ').textContent=fmtR(totEcon);
   document.getElementById('pge-econ-sub').textContent=`${nFechados} fechados · ${nNeg} em neg.`;
+  document.getElementById('pge-faixa-oti').textContent=nFaixaOti;
+  document.getElementById('pge-faixa-sub').textContent=`${nFaixaLim} no limite · ${nFaixaEmp} no empate`;
   const nItemsFolha=base.filter(i=>i.eh_item).length;
   const negpct=Math.round(nFechados/Math.max(1,nItemsFolha)*100);
   document.getElementById('pge-neg-pct').textContent=negpct+'%';
@@ -691,25 +715,43 @@ function renderPGE(){
           </div>
         </div>
         <div class="pge-body" id="pgeb-${i.id}">
-          <div class="pge-grid">
+          <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:10px">
             <div class="pge-field">
               <div class="pge-fl">PV — TJMG paga</div>
-              <div class="pge-fv">${fmtR(i.pv_total)}</div>
-              <div style="font-size:10px;color:var(--text3)">${i.unidade} × ${i.qtd}</div>
+              <div class="pge-fv" style="font-size:12px">${fmtR(i.pv_total)}</div>
+              <div style="font-size:10px;color:var(--text3)">${i.unidade}</div>
             </div>
-            <div class="pge-field" style="border-left:2px solid var(--green)">
-              <div class="pge-fl">CD Ótimo — valor ideal</div>
-              <div class="pge-fv" style="color:var(--green2)">${fmtR(i.oti_total)}</div>
-              <div style="font-size:10px;color:var(--green2)">-${i.desconto_meta}% sobre PV</div>
+            <div class="pge-field" style="border-top:2px solid #E24B4A">
+              <div class="pge-fl" style="color:#F09595">CD Empate</div>
+              <div class="pge-fv" style="font-size:12px;color:#F09595">${fmtR(i.emp_total)}</div>
+              <div style="font-size:9px;color:#F09595">-${((1-i.emp_total/i.pv_total)*100).toFixed(1)}%</div>
             </div>
-            <div class="pge-field" style="border-left:2px solid ${vn!=null?(vn<=i.oti_total?'var(--green)':'var(--amber)'):'var(--border2)'}">
-              <div class="pge-fl">Valor negociado</div>
-              <div class="pge-fv" style="color:${vn!=null?(vn<=i.oti_total?'var(--green2)':'var(--amber2)'):'var(--text3)'}">${vn!=null?fmtR(vn):'—'}</div>
-              ${econom!=null?`<div style="font-size:10px;color:${vn<=i.oti_total?'var(--green2)':'var(--amber2)'}">economia: ${fmtR(econom)} (${econPct}%)</div>`:''}
+            <div class="pge-field" style="border-top:2px solid var(--amber)">
+              <div class="pge-fl" style="color:var(--amber2)">CD Limite</div>
+              <div class="pge-fv" style="font-size:12px;color:var(--amber2)">${fmtR(i.lim_total)}</div>
+              <div style="font-size:9px;color:var(--amber2)">-${((1-i.lim_total/i.pv_total)*100).toFixed(1)}%</div>
+            </div>
+            <div class="pge-field" style="border-top:2px solid var(--green)">
+              <div class="pge-fl" style="color:var(--green2)">CD Ótimo ✓</div>
+              <div class="pge-fv" style="font-size:12px;color:var(--green2)">${fmtR(i.oti_total)}</div>
+              <div style="font-size:9px;color:var(--green2)">-${i.desconto_meta}%</div>
+            </div>
+            <div class="pge-field" style="border-top:2px solid ${vn!=null?(vn<=i.oti_total?'var(--green)':vn<=i.lim_total?'var(--amber)':vn<=i.emp_total?'#E24B4A':'#606880'):'var(--border2)'}">
+              <div class="pge-fl">Negociado</div>
+              <div class="pge-fv" style="font-size:12px;color:${vn!=null?(vn<=i.oti_total?'var(--green2)':vn<=i.lim_total?'var(--amber2)':vn<=i.emp_total?'#F09595':'var(--text3)'):'var(--text3)'}">${vn!=null?fmtR(vn):'—'}</div>
+              ${econom!=null?`<div style="font-size:9px;color:${vn<=i.oti_total?'var(--green2)':vn<=i.lim_total?'var(--amber2)':'#F09595'}">${econom>=0?'+':''}${fmtR(Math.abs(econom))} (${Math.abs(econPct)}%)</div>`:''}
             </div>
           </div>
-          ${econom!=null&&vn<=i.oti_total?`<div style="background:rgba(29,158,117,.08);border:1px solid rgba(29,158,117,.2);border-radius:var(--rs);padding:7px 10px;font-size:11px;color:var(--green2);margin-bottom:10px">✅ Dentro da meta de excelência! Economia de ${fmtR(econom)} além do CD Ótimo.</div>`:''}
-          ${econom!=null&&vn>i.oti_total?`<div style="background:rgba(239,159,39,.08);border:1px solid rgba(239,159,39,.2);border-radius:var(--rs);padding:7px 10px;font-size:11px;color:var(--amber2);margin-bottom:10px">⚠️ Acima do CD Ótimo em ${fmtR(vn-i.oti_total)}. Reavaliar ou compensar em outros itens.</div>`:''}
+          <div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap">
+            ${vn!=null?`<span class="bdg" style="font-size:10px;padding:3px 10px;border-radius:20px;background:${vn<=i.oti_total?'rgba(29,158,117,.2)':vn<=i.lim_total?'rgba(239,159,39,.2)':vn<=i.emp_total?'rgba(226,75,74,.2)':'rgba(96,104,128,.2)'};color:${vn<=i.oti_total?'var(--green2)':vn<=i.lim_total?'var(--amber2)':vn<=i.emp_total?'#F09595':'var(--text3)'}">
+              ${vn<=i.oti_total?'✅ FAIXA ÓTIMA':vn<=i.lim_total?'🟡 FAIXA LIMITE':vn<=i.emp_total?'🔴 FAIXA EMPATE':'⚫ ACIMA DO EMPATE'}
+            </span>`:''}
+            <span class="bdg bx" style="font-size:10px">PV: ${fmtR(i.pv_total)}</span>
+          </div>
+          ${vn!=null&&vn<=i.oti_total?`<div style="background:rgba(29,158,117,.08);border:1px solid rgba(29,158,117,.2);border-radius:var(--rs);padding:7px 10px;font-size:11px;color:var(--green2);margin-bottom:10px">✅ <strong>Faixa Ótima</strong> — Dentro da meta de excelência (20% lucro). Economia adicional de ${fmtR(econom)} além do CD Ótimo.</div>`:''}
+          ${vn!=null&&vn>i.oti_total&&vn<=i.lim_total?`<div style="background:rgba(239,159,39,.08);border:1px solid rgba(239,159,39,.2);border-radius:var(--rs);padding:7px 10px;font-size:11px;color:var(--amber2);margin-bottom:10px">🟡 <strong>Faixa Limite</strong> — Abaixo do limite mas acima do ótimo. Obra viável, mas margem reduzida. Diferença para ótimo: ${fmtR(vn-i.oti_total)}.</div>`:''}
+          ${vn!=null&&vn>i.lim_total&&vn<=i.emp_total?`<div style="background:rgba(226,75,74,.08);border:1px solid rgba(226,75,74,.2);border-radius:var(--rs);padding:7px 10px;font-size:11px;color:#F09595;margin-bottom:10px">🔴 <strong>Faixa Empate</strong> — Margem comprometida. Reavaliar urgente ou compensar em outros itens. Diferença para limite: ${fmtR(vn-i.lim_total)}.</div>`:''}
+          ${vn!=null&&vn>i.emp_total?`<div style="background:rgba(226,75,74,.12);border:1px solid rgba(226,75,74,.4);border-radius:var(--rs);padding:7px 10px;font-size:11px;color:#F09595;margin-bottom:10px">🚨 <strong>Acima do Empate</strong> — Prejuízo neste item. Negociação crítica — revisar imediatamente.</div>`:''}
           <div class="neg-form">
             <div>
               <div class="fl">Valor negociado (R$)</div>
@@ -877,6 +919,143 @@ const im=document.createElement('div');im.className='msg ai';
 const nAt=atvParaCheck(16);
 im.textContent=`Olá, Alex! Sistema CC 370 v3.0 ativo.\n\nNova aba: 📊 PGE / Negociação — visualize os 56 itens do contrato, defina o valor ideal de negociação para cada um, registre notas e acompanhe a economia gerada.\n\nNo Checklist, cada atividade agora tem o ícone 📋 para expandir e ticar as subtarefas individualmente.\n\nHoje há ${nAt.length} atividades para acompanhar. Posso te ajudar com qualquer dúvida da obra.`;
 document.getElementById('cw').appendChild(im);
+
+// ===== EXPORTAÇÃO =====
+function exportarExcel(){
+  const base=typeof PGE_BASE!=='undefined'?normalizePGE(PGE_BASE):[];
+  const itens=base.filter(i=>i.eh_item);
+  const rows=[['Código','Descrição','Unidade','Qtd','PV Total','CD Empate','CD Limite','CD Ótimo','Valor Negociado','Fornecedor','Status','Notas','Economia (R$)','Faixa']];
+  itens.forEach(i=>{
+    const pge=S.pge[i.id]||{};
+    const vn=pge.valor_negociado;
+    const econ=vn!=null?i.pv_total-vn:null;
+    let faixa='Pendente';
+    if(vn!=null){
+      if(vn<=i.oti_total)faixa='Ótimo';
+      else if(vn<=i.lim_total)faixa='Limite';
+      else if(vn<=i.emp_total)faixa='Empate';
+      else faixa='Acima Empate';
+    }
+    const notas=(pge.notas||[]).map(n=>n.data+': '+n.txt).join(' | ');
+    rows.push([
+      i.codigo,i.descricao,i.unidade,i.qtd,
+      i.pv_total.toFixed(2),i.emp_total.toFixed(2),i.lim_total.toFixed(2),i.oti_total.toFixed(2),
+      vn!=null?vn.toFixed(2):'',
+      pge.fornecedor||'',pge.status||'pendente',
+      notas,econ!=null?econ.toFixed(2):'',faixa
+    ]);
+  });
+  // CSV (abre no Excel)
+  const bom='﻿';
+  const csv=bom+rows.map(r=>r.map(v=>{
+    const s=String(v).replace(/"/g,'""');
+    return s.includes(',')||s.includes('"')||s.includes('
+')?`"${s}"`:s;
+  }).join(';')).join('
+');
+  const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download='PGE_CC370_Negociacoes_'+new Date().toISOString().split('T')[0]+'.csv';
+  a.click();URL.revokeObjectURL(url);
+}
+
+function exportarPDF(){
+  const base=typeof PGE_BASE!=='undefined'?normalizePGE(PGE_BASE):[];
+  const itens=base.filter(i=>i.eh_item);
+  const fmtN=v=>v!=null?'R$ '+v.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}):'—';
+  const fmtFaixa=(i,vn)=>{
+    if(vn==null)return '';
+    if(vn<=i.oti_total)return '✅ ÓTIMO';
+    if(vn<=i.lim_total)return '🟡 LIMITE';
+    if(vn<=i.emp_total)return '🔴 EMPATE';
+    return '🚨 ACIMA';
+  };
+  const n=new Date();const dtStr=n.toLocaleDateString('pt-BR');
+  const totPV=itens.reduce((s,i)=>s+i.pv_total,0);
+  const totOti=itens.reduce((s,i)=>s+i.oti_total,0);
+  const fechados=itens.filter(i=>(S.pge[i.id]?.status||'pendente')==='fechado');
+  const econ=fechados.reduce((s,i)=>{const vn=S.pge[i.id]?.valor_negociado;return s+(vn!=null?i.pv_total-vn:i.pv_total-i.oti_total);},0);
+
+  // Agrupar por grupo
+  const grupos={};
+  itens.forEach(i=>{if(!grupos[i.grupo])grupos[i.grupo]=[];grupos[i.grupo].push(i);});
+
+  let rows='';
+  Object.entries(grupos).forEach(([g,gItens])=>{
+    rows+=`<tr style="background:#1a1d27"><td colspan="9" style="padding:6px 8px;font-weight:700;font-size:11px;color:#9FE1CB;border-bottom:1px solid #2d3150;letter-spacing:.05em;text-transform:uppercase">${g}</td></tr>`;
+    gItens.forEach(i=>{
+      const pge=S.pge[i.id]||{};const vn=pge.valor_negociado;
+      const econ=vn!=null?i.pv_total-vn:null;
+      const faixa=fmtFaixa(i,vn);
+      const cor=vn!=null?(vn<=i.oti_total?'#9FE1CB':vn<=i.lim_total?'#FAC775':vn<=i.emp_total?'#F09595':'#606880'):'#606880';
+      rows+=`<tr style="border-bottom:1px solid #1a1d27">
+        <td style="font-family:monospace;font-size:9px;color:#606880;white-space:nowrap">${i.codigo}</td>
+        <td style="font-size:10px;color:#F0F2F8">${i.descricao.substring(0,45)}</td>
+        <td style="font-size:9px;color:#606880;text-align:center">${i.unidade}</td>
+        <td style="font-size:10px;text-align:right;color:#A0A8C0">${fmtN(i.pv_total)}</td>
+        <td style="font-size:10px;text-align:right;color:#F09595">${fmtN(i.emp_total)}</td>
+        <td style="font-size:10px;text-align:right;color:#FAC775">${fmtN(i.lim_total)}</td>
+        <td style="font-size:10px;text-align:right;color:#9FE1CB">${fmtN(i.oti_total)}</td>
+        <td style="font-size:10px;text-align:right;font-weight:600;color:${cor}">${fmtN(vn)}</td>
+        <td style="font-size:10px;text-align:center;white-space:nowrap">${faixa}</td>
+      </tr>`;
+    });
+  });
+
+  const html=`<!DOCTYPE html><html><head><meta charset="UTF-8">
+  <title>PGE CC 370 — Negociações ${dtStr}</title>
+  <style>
+    body{font-family:system-ui,sans-serif;background:#0f1117;color:#F0F2F8;margin:0;padding:20px}
+    .header{background:#1a1d27;border:1px solid #2d3150;border-radius:8px;padding:16px 20px;margin-bottom:16px}
+    h1{font-size:16px;color:#9FE1CB;margin-bottom:4px}
+    h2{font-size:12px;color:#A0A8C0;font-weight:400;margin-bottom:12px}
+    .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px}
+    .kpi{background:#1a1d27;border:1px solid #2d3150;border-radius:6px;padding:10px}
+    .kpi-label{font-size:9px;color:#606880;text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px}
+    .kpi-val{font-size:15px;font-weight:700}
+    .legend{display:flex;gap:12px;font-size:10px;color:#606880;margin-bottom:12px;flex-wrap:wrap}
+    .leg{display:flex;align-items:center;gap:4px}
+    table{width:100%;border-collapse:collapse;font-size:10px}
+    th{background:#22253a;color:#606880;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:6px 8px;text-align:right;border-bottom:1px solid #2d3150}
+    th:first-child,th:nth-child(2),th:nth-child(3){text-align:left}
+    td{padding:5px 8px;vertical-align:middle;text-align:right}
+    td:first-child,td:nth-child(2),td:nth-child(3){text-align:left}
+    @media print{body{background:#fff;color:#000}.header{background:#f0f0f0;border-color:#ccc}th{background:#e0e0e0;color:#333}td,th{color:#000!important}}
+  </style>
+  </head><body>
+  <div class="header">
+    <h1>📊 PGE — CC 370 · Fórum TJMG Pirapora/MG</h1>
+    <h2>Planilha de Gestão de Escopo — Negociações · Gerado em ${dtStr} · Alcance Engenharia</h2>
+    <div class="kpis">
+      <div class="kpi"><div class="kpi-label">Total PV</div><div class="kpi-val">${fmtN(totPV)}</div></div>
+      <div class="kpi"><div class="kpi-label">CD Ótimo</div><div class="kpi-val" style="color:#9FE1CB">${fmtN(totOti)}</div></div>
+      <div class="kpi"><div class="kpi-label">Itens fechados</div><div class="kpi-val" style="color:#C4B5FD">${fechados.length}/${itens.length}</div></div>
+      <div class="kpi"><div class="kpi-label">Economia negociada</div><div class="kpi-val" style="color:#9FE1CB">${fmtN(econ)}</div></div>
+    </div>
+    <div class="legend">
+      <span class="leg"><span style="color:#F09595">●</span> CD Empate (76,3% do PV)</span>
+      <span class="leg"><span style="color:#FAC775">●</span> CD Limite (69,3%)</span>
+      <span class="leg"><span style="color:#9FE1CB">●</span> CD Ótimo / Meta Excelência (53,6%)</span>
+    </div>
+  </div>
+  <table>
+    <thead><tr>
+      <th>Código</th><th>Descrição</th><th>Un</th>
+      <th>PV Total</th><th>CD Empate</th><th>CD Limite</th><th>CD Ótimo</th>
+      <th>Negociado</th><th>Faixa</th>
+    </tr></thead>
+    <tbody>${rows}</tbody>
+  </table>
+  <script>window.onload=()=>window.print();</script>
+  </body></html>`;
+
+  const blob=new Blob([html],{type:'text/html;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  window.open(url,'_blank');
+  setTimeout(()=>URL.revokeObjectURL(url),30000);
+}
+
 ls();
 </script>
 </body>
