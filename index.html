@@ -358,8 +358,31 @@ Quando o usuário pedir análise geral, analise desvios registrados, negociaçõ
 let S={trail:16,trailCk:16,trailCron:16,checklist:{},subtarefas:{},desvios:[],historico:[],avanco:0,custo:0,chat:[],pge:{}};
 
 // Inicializar PGE do base
+
+// Normalizar PGE_BASE para formato interno
+function normalizePGE(raw) {
+  return raw.map(r => ({
+    id: r.c,
+    codigo: r.c,
+    cod_cli: r.ci||'',
+    descricao: r.d,
+    unidade: r.u||'',
+    qtd: r.q||0,
+    grupo: r.g,
+    eh_item: r.t==='i',
+    pv_unit: r.pu||0,
+    pv_total: r.pv,
+    lim_total: r.lt||0,
+    oti_unit: r.ou||0,
+    oti_total: r.ot,
+    desconto_meta: r.dm||0,
+    subtarefas: r.st||[],
+    negociacao: {status:'pendente',valor_negociado:null,fornecedor:'',data_negociacao:'',notas:[]}
+  }));
+}
+
 function initPGE(){
-  const base = typeof PGE_BASE !== 'undefined' ? PGE_BASE : [];
+  const base = typeof PGE_BASE !== 'undefined' ? normalizePGE(PGE_BASE) : [];
   base.forEach(item=>{
     if(!S.pge[item.id]){
       S.pge[item.id]={
@@ -610,6 +633,7 @@ function renderPGE(){
   // Stats
   let totPV=0,totOti=0,totEcon=0,nFechados=0,nNeg=0;
   base.forEach(i=>{
+    if(!i.eh_item)return;  // stats apenas para itens folha
     totPV+=i.pv_total;totOti+=i.oti_total;
     const pge=S.pge[i.id]||{};
     if(pge.status==='fechado'){nFechados++;const vn=pge.valor_negociado;totEcon+=(vn!=null?i.pv_total-vn:i.pv_total-i.oti_total);}
@@ -619,12 +643,14 @@ function renderPGE(){
   document.getElementById('pge-oti').textContent=fmtR(totOti);
   document.getElementById('pge-econ').textContent=fmtR(totEcon);
   document.getElementById('pge-econ-sub').textContent=`${nFechados} fechados · ${nNeg} em neg.`;
-  const negpct=Math.round(nFechados/base.length*100);
+  const nItemsFolha=base.filter(i=>i.eh_item).length;
+  const negpct=Math.round(nFechados/Math.max(1,nItemsFolha)*100);
   document.getElementById('pge-neg-pct').textContent=negpct+'%';
   document.getElementById('pge-neg-fill').style.width=negpct+'%';
 
-  // Filtrar
+  // Filtrar — apenas itens folha para negociação
   const filtrados=base.filter(i=>{
+    if(!i.eh_item)return false;  // grupos não aparecem como itens negociáveis
     const pge=S.pge[i.id]||{};
     if(q&&!i.descricao.toLowerCase().includes(q)&&!i.codigo.toLowerCase().includes(q))return false;
     if(grpF&&i.grupo!==grpF)return false;
